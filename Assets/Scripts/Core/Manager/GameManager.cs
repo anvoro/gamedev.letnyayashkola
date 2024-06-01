@@ -4,10 +4,13 @@ using UnityEngine;
 
 namespace Core.Manager
 {
-	public class GameManager : SingletonBase<GameManager>, IEventReceiver<TargetReachedEvent>
+	public class GameManager : SingletonBase<GameManager>,
+		IEventReceiver<TargetReachedEvent>,
+		IEventReceiver<LaunchRequestedUIEvent>
 	{
 		protected override void Awake()
 		{
+			EventBus<LaunchRequestedUIEvent>.Subscribe(this);
 			EventBus<TargetReachedEvent>.Subscribe(this);
 			
 			base.Awake();
@@ -16,6 +19,13 @@ namespace Core.Manager
 		public void ReceiveEvent(in TargetReachedEvent args)
 		{
 			Debug.Log("GOOOOOOOOOOOOOOOOOL");
+		}
+
+		public void ReceiveEvent(in LaunchRequestedUIEvent args)
+		{
+			ObstacleMoveManager.I.EnableMove(false);
+			
+			EventBus<LaunchBallEvent>.Broadcast(new LaunchBallEvent());
 		}
 	}
 }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Game.Views
 {
@@ -38,10 +39,6 @@ namespace Game.Views
 			{
 				this.IsActive = true;
 			}
-			else if (this._parent.IsRotating == false)
-			{
-				this.IsActive = false;
-			}
 		}
 
 		private void OnMouseEnter()
@@ -50,6 +47,11 @@ namespace Game.Views
 		}
 		
 		private void OnMouseExit()
+		{
+			this.IsActive = false;
+		}
+
+		private void OnMouseUp()
 		{
 			this.IsActive = false;
 		}

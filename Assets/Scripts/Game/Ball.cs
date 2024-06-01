@@ -1,4 +1,3 @@
-using System;
 using Core.EventBus;
 using Game.Events;
 using UnityEngine;
@@ -12,23 +11,21 @@ namespace Game
 
 		[SerializeField]
 		private float _force = 1000f;
-
-		public float BaseForce => this._force;
 		
 		private void Awake()
 		{
 			this._rigidbody = this.GetComponent<Rigidbody>();
 			EventBus<LaunchBallEvent>.Subscribe(this);
 		}
-
-		public void ReceiveEvent(in LaunchBallEvent args)
-		{
-			this.AddForce(this.gameObject.transform.forward, this._force);
-		}
-
+		
 		public void AddForce(Vector3 direction, float force)
 		{
 			this._rigidbody.AddForce(direction * force);
+		}
+		
+		public void ReceiveEvent(in LaunchBallEvent args)
+		{
+			this.AddForce(this.gameObject.transform.forward, this._force);
 		}
 
 #if UNITY_EDITOR
