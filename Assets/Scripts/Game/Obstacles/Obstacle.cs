@@ -21,11 +21,7 @@ namespace Game
 				
 				if (needBroadcast == true)
 				{
-					EventBus<ObstacleOverlapEvent>.Broadcast(new ObstacleOverlapEvent
-					{
-						Sender = this,
-						IsOverlap = this._isOverlap,
-					});
+					EventBus<ObstacleOverlapEvent>.Broadcast(new ObstacleOverlapEvent(this, this._isOverlap));
 				}
 			}
 		}

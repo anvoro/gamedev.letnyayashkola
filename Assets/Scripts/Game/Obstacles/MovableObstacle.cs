@@ -22,10 +22,7 @@ namespace Game
 				this._mouseOffset = this.transform.position - pos;
 			}
 
-			EventBus<MovableObstacleSelectedEvent>.Broadcast(new MovableObstacleSelectedEvent
-			{
-				Sender = this,
-			});
+			EventBus<MovableObstacleSelectedEvent>.Broadcast(new MovableObstacleSelectedEvent(this));
 		}
 		
 		private void OnMouseUp()
@@ -39,11 +36,7 @@ namespace Game
 			{
 				this._isDrag = false;
 				
-				EventBus<MovableObstacleDragEvent>.Broadcast(new MovableObstacleDragEvent
-				{
-					Sender = this,
-					IsDrag = false,
-				});
+				EventBus<MovableObstacleDragEvent>.Broadcast(new MovableObstacleDragEvent(this, false));
 			}
 		}
 
@@ -58,11 +51,7 @@ namespace Game
 			{
 				this._isDrag = true;
 				
-				EventBus<MovableObstacleDragEvent>.Broadcast(new MovableObstacleDragEvent
-				{
-					Sender = this,
-					IsDrag = true,
-				});
+				EventBus<MovableObstacleDragEvent>.Broadcast(new MovableObstacleDragEvent(this, true));
 			}
 			
 			if (ObstacleMoveManager.I.TryGetMousePosition(out Vector3 pos) == true)

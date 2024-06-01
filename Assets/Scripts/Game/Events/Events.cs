@@ -1,25 +1,42 @@
 ﻿namespace Game.Events
 {
-	public struct LaunchRequestedUIEvent { }
+	public readonly struct LaunchRequestedUIEvent { }
 	
-	public struct LaunchBallEvent { }
+	public readonly struct LaunchBallEvent { }
 	
-	public struct TargetReachedEvent { }
+	public readonly struct TargetReachedEvent { }
 
-	public struct MovableObstacleSelectedEvent
+	public readonly struct MovableObstacleSelectedEvent
 	{
-		public MovableObstacle Sender;
+		public readonly MovableObstacle Sender;
+
+		public MovableObstacleSelectedEvent(MovableObstacle sender)
+		{
+			this.Sender = sender;
+		}
 	}
 	
-	public struct MovableObstacleDragEvent
+	public readonly struct MovableObstacleDragEvent
 	{
-		public MovableObstacle Sender;
-		public bool IsDrag;
+		public readonly MovableObstacle Sender;
+		public readonly bool IsDrag;
+
+		public MovableObstacleDragEvent(MovableObstacle sender, bool isDrag)
+		{
+			this.Sender = sender;
+			this.IsDrag = isDrag;
+		}
 	}
 	
-	public struct ObstacleOverlapEvent
+	public readonly struct ObstacleOverlapEvent
 	{
-		public Obstacle Sender;
-		public bool IsOverlap;
+		public readonly Obstacle Sender;
+		public readonly bool IsOverlap;
+
+		public ObstacleOverlapEvent(Obstacle sender, bool isOverlap)
+		{
+			this.Sender = sender;
+			this.IsOverlap = isOverlap;
+		}
 	}
 }

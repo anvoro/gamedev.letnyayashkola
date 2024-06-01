@@ -102,10 +102,7 @@ namespace Core.Manager
 
 		private void ClearSelection()
 		{
-			EventBus<MovableObstacleSelectedEvent>.Broadcast(new MovableObstacleSelectedEvent
-			{
-				Sender = null,
-			});
+			EventBus<MovableObstacleSelectedEvent>.Broadcast(new MovableObstacleSelectedEvent(null));
 			
 			this._rotator.gameObject.SetActive(false);
 		}
