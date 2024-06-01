@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Core.EventBus
 {
@@ -21,6 +22,7 @@ namespace Core.EventBus
 			}
 		}
 
+		//todo: add Unsubscribes
 		public static void Unsubscribe(IEventReceiver<T> receiver)
 		{
 			if (subscribers.Remove(receiver) == false)
@@ -31,6 +33,11 @@ namespace Core.EventBus
 
 		public static void Broadcast(in T args)
 		{
+			if (subscribers.Count == 0)
+			{
+				Debug.LogWarning($"EventBus typeof: '{typeof(T).Name}' dont have any listeners, possible miss subscribe in code");
+			}
+			
 			foreach (IEventReceiver<T> receiver in subscribers)
 			{
 				receiver.ReceiveEvent(args);
