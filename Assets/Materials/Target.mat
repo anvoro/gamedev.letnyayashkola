@@ -7,12 +7,15 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Transparent
+  m_Name: Target
   m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
   m_ValidKeywords:
   - _ALPHAPREMULTIPLY_ON
+  - _DETAIL_MULX2
+  - _EMISSION
+  - _GLOSSYREFLECTIONS_OFF
   m_InvalidKeywords: []
-  m_LightmapFlags: 4
+  m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: 3000
@@ -27,7 +30,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 74aabfeee07dc3c4da840372f3bad340, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailMask:
@@ -66,7 +69,7 @@ Material:
     - _DstBlend: 10
     - _GlossMapScale: 1
     - _Glossiness: 0.5
-    - _GlossyReflections: 1
+    - _GlossyReflections: 0
     - _Metallic: 0
     - _Mode: 3
     - _OcclusionStrength: 1
@@ -77,6 +80,6 @@ Material:
     - _UVSec: 0
     - _ZWrite: 0
     m_Colors:
-    - _Color: {r: 0.39215687, g: 0.78431374, b: 0.39215687, a: 0.39215687}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _Color: {r: 0, g: 1, b: 0, a: 0.47058824}
+    - _EmissionColor: {r: 0.0014602685, g: 0.3611859, b: 0.035449304, a: 1}
   m_BuildTextureStacks: []
