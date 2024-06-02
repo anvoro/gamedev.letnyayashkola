@@ -8,7 +8,8 @@ namespace Core.Manager
 {
 	public class ObstacleMoveManager : SingletonBase<ObstacleMoveManager>,
 		IEventReceiver<MovableObstacleSelectedEvent>,
-		IEventReceiver<MovableObstacleDragEvent>
+		IEventReceiver<MovableObstacleDragEvent>,
+		IEventReceiver<PrepareToLaunchEvent>
 	{
 		private readonly RaycastHit[] _raycastHits = new RaycastHit[1];
 		private readonly List<Obstacle> _obstacles = new();
@@ -30,6 +31,7 @@ namespace Core.Manager
 		{
 			EventBus<MovableObstacleSelectedEvent>.Subscribe(this);
 			EventBus<MovableObstacleDragEvent>.Subscribe(this);
+			EventBus<PrepareToLaunchEvent>.Subscribe(this);
 			
 			this._camera = Camera.main;
 			this._rotator.gameObject.SetActive(false);
@@ -39,31 +41,23 @@ namespace Core.Manager
 		
 		private void Start()
 		{
-			this.FindAllObstacle();
-			this.EnableMove(true);
-		}
-
-		private void FindAllObstacle()
-		{
-			this._obstacles.Clear();
+			findAllObstacle();
+			this.EnableMoveObstacles(true);
 			
-			foreach (var go in GameObject.FindGameObjectsWithTag("Obstacle"))
+			void findAllObstacle()
 			{
-				if (go.TryGetComponent<Obstacle>(out var obstacle) == true)
+				this._obstacles.Clear();
+			
+				foreach (var go in GameObject.FindGameObjectsWithTag("Obstacle"))
 				{
-					this._obstacles.Add(obstacle);
+					if (go.TryGetComponent<Obstacle>(out var obstacle) == true)
+					{
+						this._obstacles.Add(obstacle);
+					}
 				}
 			}
 		}
-
-		private void EnableObstacleTriggers(bool enable)
-		{
-			foreach (var obstacle in this._obstacles)
-			{
-				obstacle.SetTriggerMode(enable);
-			}
-		}
-
+		
 		private void Update()
 		{
 			if (this._currentSelectedObstacle == null)
@@ -89,14 +83,22 @@ namespace Core.Manager
 			}
 		}
 
-		public void EnableMove(bool enable)
+		private void EnableMoveObstacles(bool enable)
 		{
 			this.MoveAllowed = enable;
-			this.EnableObstacleTriggers(enable);
+			enableObstacleTriggers(enable);
 
 			if (enable == false)
 			{
 				this.ClearSelection();
+			}
+			
+			void enableObstacleTriggers(bool enable)
+			{
+				foreach (var obstacle in this._obstacles)
+				{
+					obstacle.SetTriggerMode(enable);
+				}
 			}
 		}
 
@@ -148,6 +150,11 @@ namespace Core.Manager
 					args.Sender.transform.position = this._initMovePosition;
 				}
 			}
+		}
+
+		public void ReceiveEvent(in PrepareToLaunchEvent args)
+		{
+			this.EnableMoveObstacles(false);
 		}
 	}
 }

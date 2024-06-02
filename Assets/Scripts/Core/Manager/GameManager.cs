@@ -23,8 +23,7 @@ namespace Core.Manager
 
 		public void ReceiveEvent(in LaunchRequestedUIEvent args)
 		{
-			ObstacleMoveManager.I.EnableMove(false);
-			
+			EventBus<PrepareToLaunchEvent>.Broadcast(new PrepareToLaunchEvent());
 			EventBus<LaunchBallEvent>.Broadcast(new LaunchBallEvent());
 		}
 	}
