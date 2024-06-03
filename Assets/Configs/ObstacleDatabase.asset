@@ -13,11 +13,5 @@ MonoBehaviour:
   m_Name: ObstacleDatabase
   m_EditorClassIdentifier: 
   _items:
-  - Prefab: {fileID: 2656516219574270680, guid: 3625149f30dda7d4e87e79c73fb19491, type: 3}
-    Texture: {fileID: 2800000, guid: 312562db1c8f6e44c8e31fe136253ca5, type: 2}
-  - Prefab: {fileID: 2656516219574270680, guid: 3625149f30dda7d4e87e79c73fb19491, type: 3}
-    Texture: {fileID: 2800000, guid: 312562db1c8f6e44c8e31fe136253ca5, type: 2}
-  - Prefab: {fileID: 2656516219574270680, guid: 3625149f30dda7d4e87e79c73fb19491, type: 3}
-    Texture: {fileID: 2800000, guid: 312562db1c8f6e44c8e31fe136253ca5, type: 2}
-  - Prefab: {fileID: 2656516219574270680, guid: 3625149f30dda7d4e87e79c73fb19491, type: 3}
+  - Prefab: {fileID: 2656516219574270680, guid: 9e75692fa7c00e44f8376bf401bc8f84, type: 3}
     Texture: {fileID: 2800000, guid: 312562db1c8f6e44c8e31fe136253ca5, type: 2}

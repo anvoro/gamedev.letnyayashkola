@@ -1,5 +1,4 @@
-﻿using System;
-using Core.EventBus;
+﻿using Core.EventBus;
 using Core.Manager;
 using Game.Events;
 using UnityEngine;
@@ -10,11 +9,16 @@ namespace Game
 		IEventReceiver<EndDragMouseEvent>,
 		IEventReceiver<BeginDragMouseEvent>
 	{
+		[SerializeField]
+		private bool _isPlayerPlaced;
+		
 		private Vector3 _mouseDragOffset;
 		private bool _isDrag;
 
 		private bool _inMouseFocus;
 
+		public bool IsPlayerPlaced => this._isPlayerPlaced;
+		
 		protected override void Awake()
 		{
 			EventBus<EndDragMouseEvent>.Subscribe(this);
