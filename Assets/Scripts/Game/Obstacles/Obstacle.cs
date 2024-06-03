@@ -55,5 +55,15 @@ namespace Game
 			
 			this.IsOverlap = false;
 		}
+
+		private void OnTriggerStay(Collider other)
+		{
+			if (other.gameObject.CompareTag("Obstacle") == false)
+			{
+				return;
+			}
+			
+			this.IsOverlap = true;
+		}
 	}
 }

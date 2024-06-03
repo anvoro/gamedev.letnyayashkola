@@ -9,18 +9,19 @@ namespace Core.Manager
 {
 	public class ObstaclePlacementManager : SingletonBase<ObstaclePlacementManager>,
 		IEventReceiver<DraggedFromSelectionImageUIEvent>,
-		IEventReceiver<MovableObstacleDragEvent>
+		IEventReceiver<EndDragObstacleEvent>
 	{
 		[SerializeField]
 		private ObstacleDatabase _obstacleDatabase;
-
 		[SerializeField]
 		private ObstacleSelectPanel _obstacleSelectPanel;
 
+		private MovableObstacle _currentSpawnedObstacle;
+        
 		protected override void Awake()
 		{
 			EventBus<DraggedFromSelectionImageUIEvent>.Subscribe(this);
-			EventBus<MovableObstacleDragEvent>.Subscribe(this);
+			EventBus<EndDragObstacleEvent>.Subscribe(this);
 			
 			base.Awake();
 		}
@@ -32,27 +33,40 @@ namespace Core.Manager
 
 		public void ReceiveEvent(in DraggedFromSelectionImageUIEvent args)
 		{
+			if (this._currentSpawnedObstacle != null)
+			{
+				return;
+			}
+			
 			if (ObstacleMoveManager.I.TryGetMousePosition(out Vector3 pos) == true)
 			{
 				MovableObstacle movableObstacle = Instantiate(args.Prefab, pos, args.Prefab.transform.rotation);
+				EventBus<ObstacleSpawnEvent>.Broadcast(new ObstacleSpawnEvent(movableObstacle));
 				
-				EventBus<MovableObstacleSelectedEvent>.Broadcast(new MovableObstacleSelectedEvent(movableObstacle));
-				EventBus<MovableObstacleDragEvent>.Broadcast(new MovableObstacleDragEvent(movableObstacle, true));
+				this._currentSpawnedObstacle = movableObstacle;
+				
+				this._currentSpawnedObstacle.SetTriggerMode(true);
+				this._currentSpawnedObstacle.Select();
+				this._currentSpawnedObstacle.BeginDrag();
 			}
 		}
 		
-		public void ReceiveEvent(in MovableObstacleDragEvent args)
+		public void ReceiveEvent(in EndDragObstacleEvent args)
 		{
-			if (args.IsDrag == false)
+			if (args.Sender != this._currentSpawnedObstacle)
 			{
-				if (args.Sender.IsOverlap == true)
-				{
-					Destroy(args.Sender.gameObject);
-				}
-				else
-				{
-					//todo: нужно добавлять обстакл в общий список обстаклов, при его размещении
-				}
+				return;
+			}
+			
+			this._currentSpawnedObstacle.ClearSelection();
+			
+			if (this._currentSpawnedObstacle.IsOverlap == true)
+			{
+				this._currentSpawnedObstacle.Destroy();
+			}
+			else
+			{
+				this._currentSpawnedObstacle = null;
 			}
 		}
 	}

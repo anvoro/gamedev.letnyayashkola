@@ -21,8 +21,7 @@ namespace Core.EventBus
 					$"Receiver '{receiver}' already subscribed for '{nameof(T)}' event");
 			}
 		}
-
-		//todo: add Unsubscribes
+		
 		public static void Unsubscribe(IEventReceiver<T> receiver)
 		{
 			if (subscribers.Remove(receiver) == false)

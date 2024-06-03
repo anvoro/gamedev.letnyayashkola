@@ -8,6 +8,8 @@ namespace Core.Manager
 		IEventReceiver<TargetReachedEvent>,
 		IEventReceiver<LaunchRequestedUIEvent>
 	{
+		private bool _launched;
+		
 		protected override void Awake()
 		{
 			EventBus<LaunchRequestedUIEvent>.Subscribe(this);
@@ -23,8 +25,15 @@ namespace Core.Manager
 
 		public void ReceiveEvent(in LaunchRequestedUIEvent args)
 		{
+			if (this._launched == true)
+			{
+				return;
+			}
+			
 			EventBus<PrepareToLaunchEvent>.Broadcast(new PrepareToLaunchEvent());
 			EventBus<LaunchBallEvent>.Broadcast(new LaunchBallEvent());
+
+			this._launched = true;
 		}
 	}
 }

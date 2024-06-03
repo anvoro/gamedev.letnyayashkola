@@ -7,11 +7,12 @@ using UnityEngine;
 namespace Core.Manager
 {
 	public class ObstacleMoveManager : SingletonBase<ObstacleMoveManager>,
-		IEventReceiver<MovableObstacleSelectedEvent>,
-		IEventReceiver<MovableObstacleDragEvent>,
 		IEventReceiver<PrepareToLaunchEvent>,
-		IEventReceiver<EndDragMouseEvent>,
-		IEventReceiver<BeginDragMouseEvent>
+		IEventReceiver<ObstacleSpawnEvent>,
+		IEventReceiver<ObstacleDestroyEvent>,
+		IEventReceiver<ObstacleSelectedEvent>,
+		IEventReceiver<BeginDragObstacleEvent>,
+		IEventReceiver<EndDragObstacleEvent>
 	{
 		private readonly RaycastHit[] _raycastHits = new RaycastHit[1];
 		private readonly List<Obstacle> _obstacles = new();
@@ -22,22 +23,19 @@ namespace Core.Manager
 		private Camera _camera;
 		private MovableObstacle _currentSelectedObstacle;
 
-		private Vector3 _initMovePosition;
-		private Vector3 _mouseOffset;
+		private Vector3 _startMovePosition;
 		
-		private bool _isSelectedDrag;
-
 		public bool MoveAllowed { get; private set; }
 
 		protected override void Awake()
 		{
-			EventBus<MovableObstacleSelectedEvent>.Subscribe(this);
-			EventBus<MovableObstacleDragEvent>.Subscribe(this);
 			EventBus<PrepareToLaunchEvent>.Subscribe(this);
-
-			EventBus<EndDragMouseEvent>.Subscribe(this);
-			EventBus<BeginDragMouseEvent>.Subscribe(this);
-
+			EventBus<ObstacleSpawnEvent>.Subscribe(this);
+			EventBus<ObstacleDestroyEvent>.Subscribe(this);
+			EventBus<ObstacleSelectedEvent>.Subscribe(this);
+			EventBus<BeginDragObstacleEvent>.Subscribe(this);
+			EventBus<EndDragObstacleEvent>.Subscribe(this);
+			
 			this._camera = Camera.main;
 			this._rotator.gameObject.SetActive(false);
 
@@ -47,6 +45,7 @@ namespace Core.Manager
 		private void Start()
 		{
 			findAllObstacle();
+			
 			this.EnableMoveObstacles(true);
 
 			void findAllObstacle()
@@ -55,7 +54,7 @@ namespace Core.Manager
 
 				foreach (GameObject go in GameObject.FindGameObjectsWithTag("Obstacle"))
 				{
-					if (go.TryGetComponent<Obstacle>(out Obstacle obstacle) == true)
+					if (go.TryGetComponent(out Obstacle obstacle) == true)
 					{
 						this._obstacles.Add(obstacle);
 					}
@@ -69,21 +68,9 @@ namespace Core.Manager
 			{
 				return;
 			}
-
-			moveSelected();
+			
 			moveRotator();
-
-			void moveSelected()
-			{
-				if (this._isSelectedDrag == true)
-				{
-					if (this.TryGetMousePosition(out Vector3 pos) == true)
-					{
-						this._currentSelectedObstacle.transform.position = pos + this._mouseOffset;
-					}
-				}
-			}
-            
+			
 			void moveRotator()
 			{
 				if (this._rotator.gameObject.activeSelf == false)
@@ -108,7 +95,7 @@ namespace Core.Manager
 
 			if (enable == false)
 			{
-				this.ClearSelection();
+				this._currentSelectedObstacle?.ClearSelection();
 			}
 
 			void enableObstacleTriggers(bool enable)
@@ -118,13 +105,6 @@ namespace Core.Manager
 					obstacle.SetTriggerMode(enable);
 				}
 			}
-		}
-
-		private void ClearSelection()
-		{
-			EventBus<MovableObstacleSelectedEvent>.Broadcast(new MovableObstacleSelectedEvent(null));
-
-			this._rotator.gameObject.SetActive(false);
 		}
 
 		public bool TryGetMousePosition(out Vector3 pos)
@@ -147,60 +127,41 @@ namespace Core.Manager
 			this.EnableMoveObstacles(false);
 		}
 
-		public void ReceiveEvent(in MovableObstacleSelectedEvent args)
+		public void ReceiveEvent(in ObstacleSelectedEvent args)
 		{
 			this._currentSelectedObstacle = args.Sender;
 
-			if (args.Sender == null)
+			if (this._currentSelectedObstacle == null)
 			{
+				this._rotator.gameObject.SetActive(false);
 				return;
 			}
 
 			this._rotator.ObjectToRotate = this._currentSelectedObstacle.transform;
 			this._rotator.gameObject.SetActive(true);
 		}
-
-		public void ReceiveEvent(in MovableObstacleDragEvent args)
-		{
-			if (args.IsDrag == true)
-			{
-				this._initMovePosition = args.Sender.transform.position;
-			}
-			else
-			{
-				if (args.Sender.IsOverlap == true)
-				{
-					args.Sender.transform.position = this._initMovePosition;
-				}
-			}
-		}
 		
-		public void ReceiveEvent(in BeginDragMouseEvent args)
+		public void ReceiveEvent(in BeginDragObstacleEvent args)
 		{
-			if (this._currentSelectedObstacle == null || this._currentSelectedObstacle.InMouseFocus == false)
+			this._startMovePosition = this._currentSelectedObstacle.transform.position;
+		}
+
+		public void ReceiveEvent(in EndDragObstacleEvent args)
+		{
+			if (this._currentSelectedObstacle.IsOverlap == true)
 			{
-				return;
-			}
-			
-			if (this.TryGetMousePosition(out Vector3 pos) == true)
-			{
-				this._mouseOffset = this._currentSelectedObstacle.transform.position - pos;
-				
-				this._isSelectedDrag = true;
-				EventBus<MovableObstacleDragEvent>.Broadcast(new MovableObstacleDragEvent(this._currentSelectedObstacle, true));
+				this._currentSelectedObstacle.transform.position = this._startMovePosition;
 			}
 		}
 
-		public void ReceiveEvent(in EndDragMouseEvent args)
+		public void ReceiveEvent(in ObstacleSpawnEvent args)
 		{
-			if (this._currentSelectedObstacle == null)
-			{
-				return;
-			}
-			
-			//todo: вынести вызовы этих методов всё таки в сам класс ovableObstacle, здесь они не к месте, т.к. очень плохо, что класс кидает тот же эвент, на который сам подписан
-			this._isSelectedDrag = false;
-			EventBus<MovableObstacleDragEvent>.Broadcast(new MovableObstacleDragEvent(this._currentSelectedObstacle, false));
+			this._obstacles.Add(args.Sender);
+		}
+
+		public void ReceiveEvent(in ObstacleDestroyEvent args)
+		{
+			this._obstacles.Remove(args.Sender);
 		}
 	}
 }

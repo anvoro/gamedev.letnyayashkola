@@ -1,25 +1,52 @@
 ﻿namespace Game.Events
 {
-	public readonly struct MovableObstacleSelectedEvent
+	public readonly struct ObstacleSpawnEvent
 	{
 		public readonly MovableObstacle Sender;
 
-		public MovableObstacleSelectedEvent(MovableObstacle sender)
+		public ObstacleSpawnEvent(MovableObstacle sender)
 		{
 			this.Sender = sender;
 		}
 	}
 	
-	//todo: всё таки разделить на 2 эвента, для чистоты кода
-	public readonly struct MovableObstacleDragEvent
+	public readonly struct ObstacleDestroyEvent
 	{
 		public readonly MovableObstacle Sender;
-		public readonly bool IsDrag;
 
-		public MovableObstacleDragEvent(MovableObstacle sender, bool isDrag)
+		public ObstacleDestroyEvent(MovableObstacle sender)
 		{
 			this.Sender = sender;
-			this.IsDrag = isDrag;
+		}
+	}
+	
+	public readonly struct ObstacleSelectedEvent
+	{
+		public readonly MovableObstacle Sender;
+
+		public ObstacleSelectedEvent(MovableObstacle sender)
+		{
+			this.Sender = sender;
+		}
+	}
+	
+	public readonly struct BeginDragObstacleEvent
+	{
+		public readonly MovableObstacle Sender;
+
+		public BeginDragObstacleEvent(MovableObstacle sender)
+		{
+			this.Sender = sender;
+		}
+	}
+	
+	public readonly struct EndDragObstacleEvent
+	{
+		public readonly MovableObstacle Sender;
+
+		public EndDragObstacleEvent(MovableObstacle sender)
+		{
+			this.Sender = sender;
 		}
 	}
 	

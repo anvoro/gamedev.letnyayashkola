@@ -1,4 +1,5 @@
-﻿using Core.EventBus;
+﻿using System;
+using Core.EventBus;
 using Game.Events;
 using UnityEngine;
 
@@ -6,7 +7,9 @@ namespace Game.Views
 {
 	[RequireComponent(typeof(Renderer))]
 	[RequireComponent(typeof(MovableObstacle))]
-	public class MovableObstacleView : MonoBehaviour, IEventReceiver<MovableObstacleSelectedEvent>, IEventReceiver<ObstacleOverlapEvent>
+	public class MovableObstacleView : MonoBehaviour,
+		IEventReceiver<ObstacleSelectedEvent>,
+		IEventReceiver<ObstacleOverlapEvent>
 	{
 		private MovableObstacle _parent;
 		private Renderer _renderer;
@@ -23,14 +26,20 @@ namespace Game.Views
 		
 		private void Awake()
 		{
-			EventBus<MovableObstacleSelectedEvent>.Subscribe(this);
+			EventBus<ObstacleSelectedEvent>.Subscribe(this);
 			EventBus<ObstacleOverlapEvent>.Subscribe(this);
 			
 			this._parent = this.GetComponent<MovableObstacle>();
 			this._renderer = this.GetComponent<Renderer>();
 		}
 
-		public void ReceiveEvent(in MovableObstacleSelectedEvent args)
+		private void OnDestroy()
+		{
+			EventBus<ObstacleSelectedEvent>.Unsubscribe(this);
+			EventBus<ObstacleOverlapEvent>.Unsubscribe(this);
+		}
+
+		public void ReceiveEvent(in ObstacleSelectedEvent args)
 		{
 			this._renderer.material = args.Sender == this._parent ? this._selectedMaterial : this._idleMaterial;
 		}
