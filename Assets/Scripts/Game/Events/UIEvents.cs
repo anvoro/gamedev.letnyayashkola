@@ -2,6 +2,8 @@
 {
 	public readonly struct LaunchRequestedUIEvent { }
 	
+	public readonly struct ResetBallRequestedUIEvent { }
+	
 	public readonly struct DeleteObstacleRequestUIEvent { }
 
 	public readonly struct DraggedFromSelectionImageUIEvent

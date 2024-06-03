@@ -4,5 +4,7 @@
 	
 	public readonly struct LaunchBallEvent { }
 	
+	public readonly struct ResetBallEvent { }
+	
 	public readonly struct TargetReachedEvent { }
 }
