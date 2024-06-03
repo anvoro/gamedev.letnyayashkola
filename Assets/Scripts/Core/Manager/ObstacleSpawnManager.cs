@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Core.Manager
 {
-	public class ObstaclePlacementManager : SingletonBase<ObstaclePlacementManager>,
+	public class ObstacleSpawnManager : SingletonBase<ObstacleSpawnManager>,
 		IEventReceiver<DraggedFromSelectionImageUIEvent>,
 		IEventReceiver<EndDragObstacleEvent>
 	{
@@ -66,6 +66,7 @@ namespace Core.Manager
 			}
 			else
 			{
+				this._currentSpawnedObstacle.IsPlayerPlaced = true;
 				this._currentSpawnedObstacle = null;
 			}
 		}

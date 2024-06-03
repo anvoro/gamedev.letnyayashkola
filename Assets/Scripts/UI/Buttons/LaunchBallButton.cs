@@ -16,7 +16,7 @@ namespace UI
 			
 			this._button.onClick.AddListener(() =>
 			{
-				this._button.interactable = false;
+				this._button.SetInteractable(false);
 				EventBus<LaunchRequestedUIEvent>.Broadcast(new LaunchRequestedUIEvent());
 			});
 		}

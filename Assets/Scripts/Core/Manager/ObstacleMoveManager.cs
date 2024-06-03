@@ -12,7 +12,9 @@ namespace Core.Manager
 		IEventReceiver<ObstacleDestroyEvent>,
 		IEventReceiver<ObstacleSelectedEvent>,
 		IEventReceiver<BeginDragObstacleEvent>,
-		IEventReceiver<EndDragObstacleEvent>
+		IEventReceiver<EndDragObstacleEvent>,
+		IEventReceiver<DeleteObstacleRequestUIEvent>
+		
 	{
 		private readonly RaycastHit[] _raycastHits = new RaycastHit[1];
 		private readonly List<Obstacle> _obstacles = new();
@@ -35,11 +37,17 @@ namespace Core.Manager
 			EventBus<ObstacleSelectedEvent>.Subscribe(this);
 			EventBus<BeginDragObstacleEvent>.Subscribe(this);
 			EventBus<EndDragObstacleEvent>.Subscribe(this);
+			EventBus<DeleteObstacleRequestUIEvent>.Subscribe(this);
 			
 			this._camera = Camera.main;
-			this._rotator.gameObject.SetActive(false);
+			this.ActivateRotator(false);
 
 			base.Awake();
+		}
+
+		private void ActivateRotator(bool isActive)
+		{
+			this._rotator.gameObject.SetActive(isActive);
 		}
 
 		private void Start()
@@ -133,12 +141,12 @@ namespace Core.Manager
 
 			if (this._currentSelectedObstacle == null)
 			{
-				this._rotator.gameObject.SetActive(false);
+				this.ActivateRotator(false);
 				return;
 			}
 
 			this._rotator.ObjectToRotate = this._currentSelectedObstacle.transform;
-			this._rotator.gameObject.SetActive(true);
+			this.ActivateRotator(true);
 		}
 		
 		public void ReceiveEvent(in BeginDragObstacleEvent args)
@@ -162,6 +170,13 @@ namespace Core.Manager
 		public void ReceiveEvent(in ObstacleDestroyEvent args)
 		{
 			this._obstacles.Remove(args.Sender);
+		}
+
+		public void ReceiveEvent(in DeleteObstacleRequestUIEvent args)
+		{
+			var temp = this._currentSelectedObstacle;
+			temp.ClearSelection();
+			temp.Destroy();
 		}
 	}
 }

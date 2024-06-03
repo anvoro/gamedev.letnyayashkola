@@ -9,15 +9,12 @@ namespace Game
 		IEventReceiver<EndDragMouseEvent>,
 		IEventReceiver<BeginDragMouseEvent>
 	{
-		[SerializeField]
-		private bool _isPlayerPlaced;
-		
 		private Vector3 _mouseDragOffset;
 		private bool _isDrag;
 
 		private bool _inMouseFocus;
 
-		public bool IsPlayerPlaced => this._isPlayerPlaced;
+		public bool IsPlayerPlaced { get; set; }
 		
 		protected override void Awake()
 		{

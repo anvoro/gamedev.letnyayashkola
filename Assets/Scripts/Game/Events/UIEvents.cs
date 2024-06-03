@@ -1,6 +1,8 @@
 ﻿namespace Game.Events
 {
 	public readonly struct LaunchRequestedUIEvent { }
+	
+	public readonly struct DeleteObstacleRequestUIEvent { }
 
 	public readonly struct DraggedFromSelectionImageUIEvent
 	{
