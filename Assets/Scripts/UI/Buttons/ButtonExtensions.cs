@@ -1,6 +1,6 @@
 ﻿using UnityEngine.UI;
 
-namespace UI
+namespace UI.Buttons
 {
 	public static class ButtonExtensions
 	{

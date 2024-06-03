@@ -1,8 +1,12 @@
-﻿namespace Game.Events
+﻿using Game.Obstacles;
+
+namespace Game.Events
 {
 	public readonly struct LaunchRequestedUIEvent { }
 	
 	public readonly struct ResetBallRequestedUIEvent { }
+	
+	public readonly struct ResetLevelRequestedUIEvent { }
 	
 	public readonly struct DeleteObstacleRequestUIEvent { }
 

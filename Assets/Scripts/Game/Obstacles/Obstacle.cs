@@ -1,9 +1,8 @@
-﻿using System;
-using Core.EventBus;
+﻿using Core.EventBus;
 using Game.Events;
 using UnityEngine;
 
-namespace Game
+namespace Game.Obstacles
 {
 	[RequireComponent(typeof(Collider))]
 	public class Obstacle : MonoBehaviour
@@ -36,7 +35,7 @@ namespace Game
 			this._collider.isTrigger = isTrigger;
 		}
 		
-		private void OnTriggerEnter(Collider other)
+		protected virtual void OnTriggerEnter(Collider other)
 		{
 			if (other.gameObject.CompareTag("Obstacle") == false)
 			{
@@ -46,7 +45,7 @@ namespace Game
 			this.IsOverlap = true;
 		}
 
-		private void OnTriggerExit(Collider other)
+		protected virtual void OnTriggerExit(Collider other)
 		{
 			if (other.gameObject.CompareTag("Obstacle") == false)
 			{
@@ -56,7 +55,7 @@ namespace Game
 			this.IsOverlap = false;
 		}
 
-		private void OnTriggerStay(Collider other)
+		protected virtual void OnTriggerStay(Collider other)
 		{
 			if (other.gameObject.CompareTag("Obstacle") == false)
 			{

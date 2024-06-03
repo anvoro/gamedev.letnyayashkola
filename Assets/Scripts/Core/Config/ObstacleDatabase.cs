@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Game;
+using Game.Obstacles;
 using UnityEngine;
 using Object = UnityEngine.Object;
 

@@ -3,23 +3,31 @@ using Core.Manager;
 using Game.Events;
 using UnityEngine;
 
-namespace Game
+namespace Game.Obstacles
 {
 	public class MovableObstacle : Obstacle,
 		IEventReceiver<EndDragMouseEvent>,
-		IEventReceiver<BeginDragMouseEvent>
+		IEventReceiver<BeginDragMouseEvent>,
+		IEventReceiver<ResetLevelRequestedUIEvent>
 	{
+		private Vector3 _startPosition;
+		private Quaternion _startRotation;
+		
 		private Vector3 _mouseDragOffset;
 		private bool _isDrag;
 
 		private bool _inMouseFocus;
-
+		
 		public bool IsPlayerPlaced { get; set; }
 		
 		protected override void Awake()
 		{
+			this._startPosition = this.transform.position;
+			this._startRotation = this.transform.rotation;
+			
 			EventBus<EndDragMouseEvent>.Subscribe(this);
 			EventBus<BeginDragMouseEvent>.Subscribe(this);
+			EventBus<ResetLevelRequestedUIEvent>.Subscribe(this);
 			
 			base.Awake();
 		}
@@ -28,10 +36,16 @@ namespace Game
 		{
 			EventBus<EndDragMouseEvent>.Unsubscribe(this);
 			EventBus<BeginDragMouseEvent>.Unsubscribe(this);
+			EventBus<ResetLevelRequestedUIEvent>.Unsubscribe(this);
 		}
 
 		private void Update()
 		{
+			if (ObstacleMoveManager.I.MoveAllowed == false)
+			{
+				return;
+			}
+			
 			tryApplyDrag();
 			
 			void tryApplyDrag()
@@ -74,16 +88,31 @@ namespace Game
 
 		private void OnMouseEnter()
 		{
+			if (ObstacleMoveManager.I.MoveAllowed == false)
+			{
+				return;
+			}
+			
 			this._inMouseFocus = true;
 		}
 
 		private void OnMouseExit()
 		{
+			if (ObstacleMoveManager.I.MoveAllowed == false)
+			{
+				return;
+			}
+            
 			this._inMouseFocus = false;
 		}
 
 		public void BeginDrag()
 		{
+			if (ObstacleMoveManager.I.MoveAllowed == false)
+			{
+				return;
+			}
+			
 			if (ObstacleMoveManager.I.TryGetMousePosition(out Vector3 offset) == true)
 			{
 				this._mouseDragOffset = this.transform.position - offset;
@@ -95,6 +124,11 @@ namespace Game
 		
 		public void ReceiveEvent(in BeginDragMouseEvent args)
 		{
+			if (ObstacleMoveManager.I.MoveAllowed == false)
+			{
+				return;
+			}
+			
 			if (this._inMouseFocus == false)
 			{
 				return;
@@ -105,6 +139,11 @@ namespace Game
 
 		public void ReceiveEvent(in EndDragMouseEvent args)
 		{
+			if (ObstacleMoveManager.I.MoveAllowed == false)
+			{
+				return;
+			}
+            
 			if (this._isDrag == false)
 			{
 				return;
@@ -112,6 +151,17 @@ namespace Game
 			
 			this._isDrag = false;
 			EventBus<EndDragObstacleEvent>.Broadcast(new EndDragObstacleEvent(this));
+		}
+		
+		private void ResetTransform()
+		{
+			this.transform.position = this._startPosition;
+			this.transform.rotation = this._startRotation;
+		}
+
+		public void ReceiveEvent(in ResetLevelRequestedUIEvent args)
+		{
+			this.ResetTransform();
 		}
 	}
 }

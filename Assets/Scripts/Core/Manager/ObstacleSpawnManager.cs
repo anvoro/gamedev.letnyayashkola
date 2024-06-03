@@ -2,7 +2,9 @@
 using Core.EventBus;
 using Game;
 using Game.Events;
+using Game.Obstacles;
 using UI;
+using UI.ObstacleSelectionUI;
 using UnityEngine;
 
 namespace Core.Manager

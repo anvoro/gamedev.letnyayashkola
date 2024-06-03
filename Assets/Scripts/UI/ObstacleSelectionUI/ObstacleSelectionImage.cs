@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace UI
+namespace UI.ObstacleSelectionUI
 {
 	public class ObstacleSelectionImage : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler
 	{

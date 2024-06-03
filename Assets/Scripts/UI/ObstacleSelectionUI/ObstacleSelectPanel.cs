@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using Core.Config;
 using UnityEngine;
-using UnityEngine.UI;
 
-namespace UI
+namespace UI.ObstacleSelectionUI
 {
 	public class ObstacleSelectPanel : MonoBehaviour
 	{

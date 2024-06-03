@@ -27,10 +27,15 @@ namespace Game
 			EventBus<ResetBallEvent>.Subscribe(this);
 		}
 
-		private void ResetTransform()
+		public void ResetRigidbody()
 		{
 			this._rigidbody.velocity = new Vector3(0f,0f,0f); 
 			this._rigidbody.angularVelocity = new Vector3(0f,0f,0f);
+		}
+		
+		private void ResetTransform()
+		{
+			this.ResetRigidbody();
             
 			this.transform.position = this._startPosition;
 			this.transform.rotation = this._startRotation;

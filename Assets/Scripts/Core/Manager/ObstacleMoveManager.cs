@@ -2,6 +2,7 @@
 using Core.EventBus;
 using Game;
 using Game.Events;
+using Game.Obstacles;
 using UnityEngine;
 
 namespace Core.Manager
@@ -13,11 +14,13 @@ namespace Core.Manager
 		IEventReceiver<ObstacleSelectedEvent>,
 		IEventReceiver<BeginDragObstacleEvent>,
 		IEventReceiver<EndDragObstacleEvent>,
-		IEventReceiver<DeleteObstacleRequestUIEvent>
-		
+		IEventReceiver<DeleteObstacleRequestUIEvent>,
+		IEventReceiver<NextLaunchCooldownEndEvent>,
+		IEventReceiver<ResetLevelRequestedUIEvent>
 	{
 		private readonly RaycastHit[] _raycastHits = new RaycastHit[1];
 		private readonly List<Obstacle> _obstacles = new();
+		private readonly List<MovableObstacle> _obstaclesToDelete = new();
 		
 		[SerializeField] private LayerMask _movePointDetectionMask;
 		[SerializeField] private ObjectRotator _rotator;
@@ -38,6 +41,8 @@ namespace Core.Manager
 			EventBus<BeginDragObstacleEvent>.Subscribe(this);
 			EventBus<EndDragObstacleEvent>.Subscribe(this);
 			EventBus<DeleteObstacleRequestUIEvent>.Subscribe(this);
+			EventBus<ResetLevelRequestedUIEvent>.Subscribe(this);
+			EventBus<NextLaunchCooldownEndEvent>.Subscribe(this);
 			
 			this._camera = Camera.main;
 			this.ActivateRotator(false);
@@ -103,7 +108,10 @@ namespace Core.Manager
 
 			if (enable == false)
 			{
-				this._currentSelectedObstacle?.ClearSelection();
+				if (this._currentSelectedObstacle != null)
+				{
+					this._currentSelectedObstacle.ClearSelection();
+				}
 			}
 
 			void enableObstacleTriggers(bool enable)
@@ -177,6 +185,37 @@ namespace Core.Manager
 			var temp = this._currentSelectedObstacle;
 			temp.ClearSelection();
 			temp.Destroy();
+		}
+
+		
+		public void ReceiveEvent(in ResetLevelRequestedUIEvent args)
+		{
+			if (this._currentSelectedObstacle != null)
+			{
+				this._currentSelectedObstacle.ClearSelection();
+			}
+
+			this._obstaclesToDelete.Clear();
+			foreach (Obstacle obstacle in this._obstacles)
+			{
+				if (obstacle is MovableObstacle mo)
+				{
+					if (mo.IsPlayerPlaced == true)
+					{
+						this._obstaclesToDelete.Add(mo);
+					}
+				}
+			}
+
+			foreach (MovableObstacle obstacle in this._obstaclesToDelete)
+			{
+				obstacle.Destroy();
+			}
+		}
+
+		public void ReceiveEvent(in NextLaunchCooldownEndEvent args)
+		{
+			this.EnableMoveObstacles(true);
 		}
 	}
 }

@@ -1,4 +1,6 @@
-﻿namespace Game.Events
+﻿using Game.Obstacles;
+
+namespace Game.Events
 {
 	public readonly struct ObstacleSpawnEvent
 	{

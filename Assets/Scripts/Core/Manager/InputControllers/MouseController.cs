@@ -1,8 +1,8 @@
-﻿using Game.Events;
+﻿using Core.EventBus;
+using Game.Events;
 using UnityEngine;
-using Core.EventBus;
 
-namespace Core.Manager
+namespace Core.Manager.InputControllers
 {
 	public class MouseController : SingletonBase<MouseController>
 	{
@@ -14,12 +14,12 @@ namespace Core.Manager
 		
 		private void Update()
 		{
-			if (Input.GetMouseButtonDown(0))
+			if (UnityEngine.Input.GetMouseButtonDown(0))
 			{
 				//Debug.Log("GetMouseButtonDown");
 			}
 			
-			if (Input.GetMouseButtonUp(0))
+			if (UnityEngine.Input.GetMouseButtonUp(0))
 			{
 				//Debug.Log("GetMouseButtonUp");
 
@@ -33,7 +33,7 @@ namespace Core.Manager
 				}
 			}
 			
-			if (Input.GetMouseButton(0))
+			if (UnityEngine.Input.GetMouseButton(0))
 			{
 				//Debug.Log("GetMouseButton");
 				

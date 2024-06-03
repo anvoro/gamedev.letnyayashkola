@@ -6,10 +6,12 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UI
+namespace UI.Buttons
 {
 	[RequireComponent(typeof(Button))]
-	public class LaunchBallButton : MonoBehaviour
+	public class LaunchBallButton : MonoBehaviour,
+		IEventReceiver<NextLaunchCooldownStartEvent>,
+		IEventReceiver<NextLaunchCooldownEndEvent>
 	{
 		private enum BroadcastType
 		{
@@ -23,15 +25,14 @@ namespace UI
 		private TMP_Text _text;
 		[SerializeField]
 		private Image _fillImage;
-		[SerializeField]
-		private float _launchCooldown = 5f;
-
+		
 		[SerializeField]
 		private string _launchText = "Launch";
 		[SerializeField]
 		private string _resetText = "Reset";
 
 		private BroadcastType _currentBroadcastType;
+		private Coroutine _cooldownCoroutine;
 
 		private BroadcastType CurrentBroadcastType
 		{
@@ -50,6 +51,9 @@ namespace UI
 
 		private void Awake()
 		{
+			EventBus<NextLaunchCooldownStartEvent>.Subscribe(this);
+			EventBus<NextLaunchCooldownEndEvent>.Subscribe(this);
+			
 			this.CurrentBroadcastType = BroadcastType.Launch;
 			
 			this._button = this.GetComponent<Button>();
@@ -64,7 +68,6 @@ namespace UI
 			{
 				case BroadcastType.Launch:
 					this.CurrentBroadcastType = BroadcastType.Reset;
-					this.StartCoroutine(this.WaitLaunchCooldown());
 					EventBus<LaunchRequestedUIEvent>.Broadcast(new LaunchRequestedUIEvent());
 					break;
 				
@@ -78,27 +81,47 @@ namespace UI
 			}
 		}
 
-		private IEnumerator WaitLaunchCooldown()
+		private IEnumerator AnimateLaunchCooldown(float launchCooldown)
 		{
 			this._button.SetInteractable(false);
 			
 			this._fillImage.gameObject.SetActive(true);
 
 			float startTime = Time.unscaledTime;
-			float goalTime = Time.unscaledTime + this._launchCooldown;
+			float goalTime = Time.unscaledTime + launchCooldown;
 
 			while (Time.unscaledTime < goalTime)
 			{
-				float currentFill = 1 - (Time.unscaledTime - startTime) / this._launchCooldown;
+				float currentFill = 1 - (Time.unscaledTime - startTime) / launchCooldown;
 				this._fillImage.fillAmount = currentFill;
 
 				yield return null;
 			}
+			
+			this._cooldownCoroutine = null;
+		}
 
+		private void OnCooldownEnd()
+		{
 			this._fillImage.fillAmount = 0f;
 			this._fillImage.gameObject.SetActive(false);
 			
 			this._button.SetInteractable(true);
+		}
+
+		public void ReceiveEvent(in NextLaunchCooldownStartEvent args)
+		{
+			this._cooldownCoroutine = this.StartCoroutine(this.AnimateLaunchCooldown(args.Cooldown));
+		}
+
+		public void ReceiveEvent(in NextLaunchCooldownEndEvent args)
+		{
+			if (this._cooldownCoroutine != null)
+			{
+				this.StopCoroutine(this._cooldownCoroutine);
+			}
+			
+			this.OnCooldownEnd();
 		}
 	}
 }

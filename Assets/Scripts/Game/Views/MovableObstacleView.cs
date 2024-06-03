@@ -1,6 +1,7 @@
 ﻿using System;
 using Core.EventBus;
 using Game.Events;
+using Game.Obstacles;
 using UnityEngine;
 
 namespace Game.Views

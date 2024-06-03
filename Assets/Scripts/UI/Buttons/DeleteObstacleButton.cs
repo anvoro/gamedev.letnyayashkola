@@ -3,7 +3,7 @@ using Game.Events;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UI
+namespace UI.Buttons
 {
 	[RequireComponent(typeof(Button))]
 	public class DeleteObstacleButton : MonoBehaviour,
