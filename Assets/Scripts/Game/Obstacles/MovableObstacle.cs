@@ -1,15 +1,14 @@
-﻿using Core.EventBus;
+﻿using System;
+using Core.EventBus;
 using Core.Manager;
 using Game.Events;
-using UnityEngine;
 
 namespace Game
 {
 	public class MovableObstacle : Obstacle
 	{
-		private Vector3 _mouseOffset;
-		private bool _isDrag;
-		
+		public bool InMouseFocus { get; private set; }
+        
 		private void OnMouseDown()
 		{
 			if (ObstacleMoveManager.I.MoveAllowed == false)
@@ -17,47 +16,17 @@ namespace Game
 				return;
 			}
 			
-			if (ObstacleMoveManager.I.TryGetMousePosition(out Vector3 pos) == true)
-			{
-				this._mouseOffset = this.transform.position - pos;
-			}
-
 			EventBus<MovableObstacleSelectedEvent>.Broadcast(new MovableObstacleSelectedEvent(this));
 		}
-		
-		private void OnMouseUp()
+
+		private void OnMouseEnter()
 		{
-			if (ObstacleMoveManager.I.MoveAllowed == false)
-			{
-				return;
-			}
-			
-			if (this._isDrag == true)
-			{
-				this._isDrag = false;
-				
-				EventBus<MovableObstacleDragEvent>.Broadcast(new MovableObstacleDragEvent(this, false));
-			}
+			this.InMouseFocus = true;
 		}
 
-		private void OnMouseDrag()
+		private void OnMouseExit()
 		{
-			if (ObstacleMoveManager.I.MoveAllowed == false)
-			{
-				return;
-			}
-            
-			if (this._isDrag == false)
-			{
-				this._isDrag = true;
-				
-				EventBus<MovableObstacleDragEvent>.Broadcast(new MovableObstacleDragEvent(this, true));
-			}
-			
-			if (ObstacleMoveManager.I.TryGetMousePosition(out Vector3 pos) == true)
-			{
-				this.transform.position = pos + this._mouseOffset;
-			}
+			this.InMouseFocus = false;
 		}
 	}
 }

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 505d68ba3f8240898a0010d7f34a2f5d, type: 3}
+  m_Name: ObstacleDatabase
+  m_EditorClassIdentifier: 
+  _items:
+  - Prefab: {fileID: 2656516219574270680, guid: 3625149f30dda7d4e87e79c73fb19491, type: 3}
+    Texture: {fileID: 2800000, guid: 312562db1c8f6e44c8e31fe136253ca5, type: 2}
+  - Prefab: {fileID: 2656516219574270680, guid: 3625149f30dda7d4e87e79c73fb19491, type: 3}
+    Texture: {fileID: 2800000, guid: 312562db1c8f6e44c8e31fe136253ca5, type: 2}
+  - Prefab: {fileID: 2656516219574270680, guid: 3625149f30dda7d4e87e79c73fb19491, type: 3}
+    Texture: {fileID: 2800000, guid: 312562db1c8f6e44c8e31fe136253ca5, type: 2}
+  - Prefab: {fileID: 2656516219574270680, guid: 3625149f30dda7d4e87e79c73fb19491, type: 3}
+    Texture: {fileID: 2800000, guid: 312562db1c8f6e44c8e31fe136253ca5, type: 2}
