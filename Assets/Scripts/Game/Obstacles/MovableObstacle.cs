@@ -2,6 +2,7 @@
 using Core.Manager;
 using Game.Events;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Game.Obstacles
 {
@@ -10,7 +11,8 @@ namespace Game.Obstacles
 		IEventReceiver<BeginDragMouseEvent>,
 		IEventReceiver<ResetLevelRequestedUIEvent>
 	{
-		[SerializeField] private bool _needRotate = true;
+		[FormerlySerializedAs("_needRotate")]
+		[SerializeField] private bool _canRotate = true;
 
 		public string Id;
 
@@ -132,7 +134,7 @@ namespace Game.Obstacles
 				return;
 			}
 
-			EventBus<ObstacleSelectedEvent>.Broadcast(new ObstacleSelectedEvent(this, this._needRotate));
+			EventBus<ObstacleSelectedEvent>.Broadcast(new ObstacleSelectedEvent(this, this._canRotate));
 		}
 
 		public void ClearSelection()

@@ -18,12 +18,13 @@ namespace Core.Manager
 		IEventReceiver<NextLaunchCooldownEndEvent>,
 		IEventReceiver<ResetLevelRequestedUIEvent>
 	{
-		[SerializeField] private LayerMask _movePointDetectionMask;
-		[SerializeField] private ObjectRotator _rotator;
 		private readonly List<Obstacle> _obstacles = new();
 		private readonly List<MovableObstacle> _obstaclesToDelete = new();
 		private readonly RaycastHit[] _raycastHits = new RaycastHit[1];
 
+		[SerializeField] private LayerMask _movePointDetectionMask;
+		[SerializeField] private ObjectRotator _rotator;
+		
 		private Camera _camera;
 		private MovableObstacle _currentSelectedObstacle;
 
@@ -147,8 +148,7 @@ namespace Core.Manager
 		{
 			this.EnableMoveObstacles(false);
 		}
-
-
+		
 		public void ReceiveEvent(in ResetLevelRequestedUIEvent args)
 		{
 			if (this._currentSelectedObstacle != null)
