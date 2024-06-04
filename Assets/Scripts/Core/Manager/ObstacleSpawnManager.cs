@@ -12,7 +12,6 @@ namespace Core.Manager
 		IEventReceiver<EndDragObstacleEvent>
 	{
 		[SerializeField] private ObstacleDatabase _obstacleDatabase;
-
 		[SerializeField] private ObstacleSelectPanel _obstacleSelectPanel;
 
 		private MovableObstacle _currentSpawnedObstacle;

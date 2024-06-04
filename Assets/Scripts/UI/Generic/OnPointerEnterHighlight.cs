@@ -10,7 +10,6 @@ namespace UI.Generic
 		[SerializeField] private Color _highlightedColor;
 
 		private Image _image;
-
 		private Color _savedColor;
 
 		private void Awake()

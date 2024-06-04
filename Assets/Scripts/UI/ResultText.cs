@@ -11,11 +11,9 @@ namespace UI
 		IEventReceiver<FailEvent>
 	{
 		[SerializeField] private string _winText = "WIN!";
-
 		[SerializeField] private Color _winColor = Color.green;
 
 		[SerializeField] private string _loseText = "LOSE :(";
-
 		[SerializeField] private Color _loseColor = Color.red;
 
 		private TMP_Text _text;

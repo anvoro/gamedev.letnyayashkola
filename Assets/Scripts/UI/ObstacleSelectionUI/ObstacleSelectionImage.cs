@@ -13,12 +13,10 @@ namespace UI.ObstacleSelectionUI
 	{
 		[SerializeField] private Image _prefabImage;
 
-		private bool _isPointerDown;
-
 		private ObstacleDatabase.DataItem _item;
-
+		
+		private bool _isPointerDown;
 		private Image _raycastImage;
-
 		private int _spawnedObstacles;
 
 		private int SpawnedObstacles

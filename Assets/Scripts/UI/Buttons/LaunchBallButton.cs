@@ -14,15 +14,14 @@ namespace UI.Buttons
 		IEventReceiver<NextLaunchCooldownEndEvent>
 	{
 		[SerializeField] private TMP_Text _text;
-
 		[SerializeField] private Image _fillImage;
-
 		[SerializeField] private string _launchText = "Launch";
-
 		[SerializeField] private string _resetText = "Reset";
 
+#if UNITY_EDITOR
 		[SerializeField] private bool _pauseOnLaunch;
-
+#endif
+		
 		private Button _button;
 		private Coroutine _cooldownCoroutine;
 
@@ -73,11 +72,12 @@ namespace UI.Buttons
 
 		private void Broadcast()
 		{
+#if UNITY_EDITOR
 			if (this._pauseOnLaunch)
 			{
 				Debug.Break();
 			}
-
+#endif
 			switch (this.CurrentBroadcastType)
 			{
 				case BroadcastType.Launch:

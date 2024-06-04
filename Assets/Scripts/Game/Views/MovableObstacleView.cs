@@ -12,9 +12,7 @@ namespace Game.Views
 		IEventReceiver<ObstacleOverlapEvent>
 	{
 		[SerializeField] private Material _idleMaterial;
-
 		[SerializeField] private Material _selectedMaterial;
-
 		[SerializeField] private Material _collidedMaterial;
 
 		private bool _isShowCollided;

@@ -31,25 +31,7 @@ namespace Game
 			EventBus<LaunchBallEvent>.Subscribe(this);
 			EventBus<ResetBallEvent>.Subscribe(this);
 		}
-
-#if UNITY_EDITOR
-		private void OnDrawGizmos()
-		{
-			Gizmos.color = Color.green;
-			Gizmos.DrawLine(this.gameObject.transform.position,
-				this.gameObject.transform.position + this.gameObject.transform.forward * 2f);
-
-			if (this._rigidbody == null)
-			{
-				return;
-			}
-
-			Gizmos.color = Color.red;
-			Gizmos.DrawLine(this.gameObject.transform.position,
-				this.gameObject.transform.position + this._rigidbody.velocity.normalized * 2f);
-		}
-#endif
-
+		
 		public void ReceiveEvent(in LaunchBallEvent args)
 		{
 			this.AddForce(this.gameObject.transform.forward, this._force);
@@ -78,5 +60,23 @@ namespace Game
 		{
 			this._rigidbody.AddForce(direction * force);
 		}
+		
+#if UNITY_EDITOR
+		private void OnDrawGizmos()
+		{
+			Gizmos.color = Color.green;
+			Gizmos.DrawLine(this.gameObject.transform.position,
+				this.gameObject.transform.position + this.gameObject.transform.forward * 2f);
+
+			if (this._rigidbody == null)
+			{
+				return;
+			}
+
+			Gizmos.color = Color.red;
+			Gizmos.DrawLine(this.gameObject.transform.position,
+				this.gameObject.transform.position + this._rigidbody.velocity.normalized * 2f);
+		}
+#endif
 	}
 }

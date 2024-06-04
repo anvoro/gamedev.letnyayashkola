@@ -7,7 +7,6 @@ namespace Game.Views
 	public class ObjectRotatorView : MonoBehaviour
 	{
 		[SerializeField] private Material _idleMaterial;
-
 		[SerializeField] private Material _selectedMaterial;
 
 		private bool _isActive;
