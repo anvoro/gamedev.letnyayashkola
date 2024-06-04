@@ -9,7 +9,7 @@ namespace Game.Obstacles
 	{
 		private Collider _collider;
 		private bool _isOverlap;
-		
+
 		public bool IsOverlap
 		{
 			get => this._isOverlap;
@@ -17,24 +17,19 @@ namespace Game.Obstacles
 			{
 				bool needBroadcast = this._isOverlap != value;
 				this._isOverlap = value;
-				
-				if (needBroadcast == true)
+
+				if (needBroadcast)
 				{
 					EventBus<ObstacleOverlapEvent>.Broadcast(new ObstacleOverlapEvent(this, this._isOverlap));
 				}
 			}
 		}
-		
+
 		protected virtual void Awake()
 		{
 			this._collider = this.GetComponent<Collider>();
 		}
 
-		public void SetTriggerMode(bool isTrigger)
-		{
-			this._collider.isTrigger = isTrigger;
-		}
-		
 		protected virtual void OnTriggerEnter(Collider other)
 		{
 			if (other.gameObject.CompareTag("Obstacle") == false)
@@ -51,7 +46,7 @@ namespace Game.Obstacles
 			{
 				return;
 			}
-			
+
 			this.IsOverlap = false;
 		}
 
@@ -61,8 +56,13 @@ namespace Game.Obstacles
 			{
 				return;
 			}
-			
+
 			this.IsOverlap = true;
+		}
+
+		public void SetTriggerMode(bool isTrigger)
+		{
+			this._collider.isTrigger = isTrigger;
 		}
 	}
 }

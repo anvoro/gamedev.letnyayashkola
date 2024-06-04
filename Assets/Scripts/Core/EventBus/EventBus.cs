@@ -21,7 +21,7 @@ namespace Core.EventBus
 					$"Receiver '{receiver}' already subscribed for '{nameof(T)}' event");
 			}
 		}
-		
+
 		public static void Unsubscribe(IEventReceiver<T> receiver)
 		{
 			if (subscribers.Remove(receiver) == false)
@@ -34,9 +34,10 @@ namespace Core.EventBus
 		{
 			if (subscribers.Count == 0)
 			{
-				Debug.LogWarning($"EventBus typeof: '{typeof(T).Name}' dont have any listeners, possible miss subscribe in code");
+				Debug.LogWarning(
+					$"EventBus typeof: '{typeof(T).Name}' dont have any listeners, possible miss subscribe in code");
 			}
-			
+
 			foreach (IEventReceiver<T> receiver in subscribers)
 			{
 				receiver.ReceiveEvent(args);

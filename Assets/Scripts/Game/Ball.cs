@@ -1,4 +1,3 @@
-using System;
 using Core.EventBus;
 using Game.Events;
 using UnityEngine;
@@ -10,10 +9,9 @@ namespace Game
 		IEventReceiver<LaunchBallEvent>,
 		IEventReceiver<ResetBallEvent>
 	{
-		private Rigidbody _rigidbody;
+		[SerializeField] private float _force = 1000f;
 
-		[SerializeField]
-		private float _force = 1000f;
+		private Rigidbody _rigidbody;
 
 		private Vector3 _startPosition;
 		private Quaternion _startRotation;
@@ -28,39 +26,10 @@ namespace Game
 		{
 			this._startPosition = this.transform.position;
 			this._startRotation = this.transform.rotation;
-			
+
 			this._rigidbody = this.GetComponent<Rigidbody>();
 			EventBus<LaunchBallEvent>.Subscribe(this);
 			EventBus<ResetBallEvent>.Subscribe(this);
-		}
-
-		public void ResetRigidbody()
-		{
-			this._rigidbody.velocity = new Vector3(0f,0f,0f); 
-			this._rigidbody.angularVelocity = new Vector3(0f,0f,0f);
-		}
-		
-		private void ResetTransform()
-		{
-			this.ResetRigidbody();
-            
-			this.transform.position = this._startPosition;
-			this.transform.rotation = this._startRotation;
-		}
-		
-		public void AddForce(Vector3 direction, float force)
-		{
-			this._rigidbody.AddForce(direction * force);
-		}
-		
-		public void ReceiveEvent(in LaunchBallEvent args)
-		{
-			this.AddForce(this.gameObject.transform.forward, this._force);
-		}
-		
-		public void ReceiveEvent(in ResetBallEvent args)
-		{
-			this.ResetTransform();
 		}
 
 #if UNITY_EDITOR
@@ -74,11 +43,40 @@ namespace Game
 			{
 				return;
 			}
-            
+
 			Gizmos.color = Color.red;
 			Gizmos.DrawLine(this.gameObject.transform.position,
 				this.gameObject.transform.position + this._rigidbody.velocity.normalized * 2f);
 		}
 #endif
+
+		public void ReceiveEvent(in LaunchBallEvent args)
+		{
+			this.AddForce(this.gameObject.transform.forward, this._force);
+		}
+
+		public void ReceiveEvent(in ResetBallEvent args)
+		{
+			this.ResetTransform();
+		}
+
+		public void ResetRigidbody()
+		{
+			this._rigidbody.velocity = new Vector3(0f, 0f, 0f);
+			this._rigidbody.angularVelocity = new Vector3(0f, 0f, 0f);
+		}
+
+		private void ResetTransform()
+		{
+			this.ResetRigidbody();
+
+			this.transform.position = this._startPosition;
+			this.transform.rotation = this._startRotation;
+		}
+
+		public void AddForce(Vector3 direction, float force)
+		{
+			this._rigidbody.AddForce(direction * force);
+		}
 	}
 }

@@ -130,6 +130,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _needRotate: 0
+  Id: TELEPORT_ENTER
 --- !u!114 &7121567099231072810
 MonoBehaviour:
   m_ObjectHideFlags: 0

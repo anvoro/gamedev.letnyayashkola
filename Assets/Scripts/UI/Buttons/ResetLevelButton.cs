@@ -11,12 +11,12 @@ namespace UI.Buttons
 		IEventReceiver<NextLaunchCooldownEndEvent>
 	{
 		private Button _button;
-		
+
 		private void Awake()
 		{
 			EventBus<NextLaunchCooldownStartEvent>.Subscribe(this);
 			EventBus<NextLaunchCooldownEndEvent>.Subscribe(this);
-			
+
 			this._button = this.GetComponent<Button>();
 			this._button.onClick.AddListener(() =>
 			{
@@ -24,14 +24,14 @@ namespace UI.Buttons
 			});
 		}
 
-		public void ReceiveEvent(in NextLaunchCooldownStartEvent args)
-		{
-			this._button.SetInteractable(false);
-		}
-
 		public void ReceiveEvent(in NextLaunchCooldownEndEvent args)
 		{
 			this._button.SetInteractable(true);
+		}
+
+		public void ReceiveEvent(in NextLaunchCooldownStartEvent args)
+		{
+			this._button.SetInteractable(false);
 		}
 	}
 }

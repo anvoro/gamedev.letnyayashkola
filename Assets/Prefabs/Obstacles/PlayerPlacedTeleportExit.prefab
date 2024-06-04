@@ -130,6 +130,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _needRotate: 1
+  Id: TELEPORT_EXIT
   _teleportPoint: {fileID: 1887306542640518071}
 --- !u!114 &7121567099231072810
 MonoBehaviour:
@@ -158,7 +159,7 @@ GameObject:
   - component: {fileID: 9158644509557113374}
   - component: {fileID: 4207183610427621795}
   m_Layer: 7
-  m_Name: Quad
+  m_Name: TeleportPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

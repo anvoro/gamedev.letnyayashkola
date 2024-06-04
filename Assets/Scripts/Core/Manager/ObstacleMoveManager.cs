@@ -18,18 +18,17 @@ namespace Core.Manager
 		IEventReceiver<NextLaunchCooldownEndEvent>,
 		IEventReceiver<ResetLevelRequestedUIEvent>
 	{
-		private readonly RaycastHit[] _raycastHits = new RaycastHit[1];
-		private readonly List<Obstacle> _obstacles = new();
-		private readonly List<MovableObstacle> _obstaclesToDelete = new();
-		
 		[SerializeField] private LayerMask _movePointDetectionMask;
 		[SerializeField] private ObjectRotator _rotator;
-		
+		private readonly List<Obstacle> _obstacles = new();
+		private readonly List<MovableObstacle> _obstaclesToDelete = new();
+		private readonly RaycastHit[] _raycastHits = new RaycastHit[1];
+
 		private Camera _camera;
 		private MovableObstacle _currentSelectedObstacle;
 
 		private Vector3 _startMovePosition;
-		
+
 		public bool MoveAllowed { get; private set; }
 
 		protected override void Awake()
@@ -43,22 +42,17 @@ namespace Core.Manager
 			EventBus<DeleteObstacleRequestUIEvent>.Subscribe(this);
 			EventBus<ResetLevelRequestedUIEvent>.Subscribe(this);
 			EventBus<NextLaunchCooldownEndEvent>.Subscribe(this);
-			
+
 			this._camera = Camera.main;
 			this.ActivateRotator(false);
 
 			base.Awake();
 		}
 
-		private void ActivateRotator(bool isActive)
-		{
-			this._rotator.gameObject.SetActive(isActive);
-		}
-
 		private void Start()
 		{
 			findAllObstacle();
-			
+
 			this.EnableMoveObstacles(true);
 
 			void findAllObstacle()
@@ -67,7 +61,7 @@ namespace Core.Manager
 
 				foreach (GameObject go in GameObject.FindGameObjectsWithTag("Obstacle"))
 				{
-					if (go.TryGetComponent(out Obstacle obstacle) == true)
+					if (go.TryGetComponent(out Obstacle obstacle))
 					{
 						this._obstacles.Add(obstacle);
 					}
@@ -81,9 +75,9 @@ namespace Core.Manager
 			{
 				return;
 			}
-			
+
 			moveRotator();
-			
+
 			void moveRotator()
 			{
 				if (this._rotator.gameObject.activeSelf == false)
@@ -100,10 +94,95 @@ namespace Core.Manager
 			}
 		}
 
+		public void ReceiveEvent(in BeginDragObstacleEvent args)
+		{
+			this._startMovePosition = this._currentSelectedObstacle.transform.position;
+		}
+
+		public void ReceiveEvent(in DeleteObstacleRequestUIEvent args)
+		{
+			MovableObstacle temp = this._currentSelectedObstacle;
+			temp.ClearSelection();
+			temp.Destroy();
+		}
+
+		public void ReceiveEvent(in EndDragObstacleEvent args)
+		{
+			if (this._currentSelectedObstacle.IsOverlap)
+			{
+				this._currentSelectedObstacle.transform.position = this._startMovePosition;
+			}
+		}
+
+		public void ReceiveEvent(in NextLaunchCooldownEndEvent args)
+		{
+			this.EnableMoveObstacles(true);
+		}
+
+		public void ReceiveEvent(in ObstacleDestroyEvent args)
+		{
+			this._obstacles.Remove(args.Sender);
+		}
+
+		public void ReceiveEvent(in ObstacleSelectedEvent args)
+		{
+			this._currentSelectedObstacle = args.Sender;
+
+			if (this._currentSelectedObstacle == null)
+			{
+				this.ActivateRotator(false);
+				return;
+			}
+
+			this._rotator.ObjectToRotate = this._currentSelectedObstacle.transform;
+			this.ActivateRotator(args.NeedRotate);
+		}
+
+		public void ReceiveEvent(in ObstacleSpawnEvent args)
+		{
+			this._obstacles.Add(args.Sender);
+		}
+
+		public void ReceiveEvent(in PrepareToLaunchEvent args)
+		{
+			this.EnableMoveObstacles(false);
+		}
+
+
+		public void ReceiveEvent(in ResetLevelRequestedUIEvent args)
+		{
+			if (this._currentSelectedObstacle != null)
+			{
+				this._currentSelectedObstacle.ClearSelection();
+			}
+
+			this._obstaclesToDelete.Clear();
+			foreach (Obstacle obstacle in this._obstacles)
+			{
+				if (obstacle is MovableObstacle mo)
+				{
+					if (mo.IsPlayerPlaced)
+					{
+						this._obstaclesToDelete.Add(mo);
+					}
+				}
+			}
+
+			foreach (MovableObstacle obstacle in this._obstaclesToDelete)
+			{
+				obstacle.Destroy();
+			}
+		}
+
+		private void ActivateRotator(bool isActive)
+		{
+			this._rotator.gameObject.SetActive(isActive);
+		}
+
 		private void EnableMoveObstacles(bool enable)
 		{
 			this.MoveAllowed = enable;
-			
+
 			enableObstacleTriggers(enable);
 
 			if (enable == false)
@@ -136,86 +215,6 @@ namespace Core.Manager
 
 			pos = Vector3.zero;
 			return false;
-		}
-		
-		public void ReceiveEvent(in PrepareToLaunchEvent args)
-		{
-			this.EnableMoveObstacles(false);
-		}
-
-		public void ReceiveEvent(in ObstacleSelectedEvent args)
-		{
-			this._currentSelectedObstacle = args.Sender;
-
-			if (this._currentSelectedObstacle == null)
-			{
-				this.ActivateRotator(false);
-				return;
-			}
-
-			this._rotator.ObjectToRotate = this._currentSelectedObstacle.transform;
-			this.ActivateRotator(args.NeedRotate);
-		}
-		
-		public void ReceiveEvent(in BeginDragObstacleEvent args)
-		{
-			this._startMovePosition = this._currentSelectedObstacle.transform.position;
-		}
-
-		public void ReceiveEvent(in EndDragObstacleEvent args)
-		{
-			if (this._currentSelectedObstacle.IsOverlap == true)
-			{
-				this._currentSelectedObstacle.transform.position = this._startMovePosition;
-			}
-		}
-
-		public void ReceiveEvent(in ObstacleSpawnEvent args)
-		{
-			this._obstacles.Add(args.Sender);
-		}
-
-		public void ReceiveEvent(in ObstacleDestroyEvent args)
-		{
-			this._obstacles.Remove(args.Sender);
-		}
-
-		public void ReceiveEvent(in DeleteObstacleRequestUIEvent args)
-		{
-			var temp = this._currentSelectedObstacle;
-			temp.ClearSelection();
-			temp.Destroy();
-		}
-
-		
-		public void ReceiveEvent(in ResetLevelRequestedUIEvent args)
-		{
-			if (this._currentSelectedObstacle != null)
-			{
-				this._currentSelectedObstacle.ClearSelection();
-			}
-
-			this._obstaclesToDelete.Clear();
-			foreach (Obstacle obstacle in this._obstacles)
-			{
-				if (obstacle is MovableObstacle mo)
-				{
-					if (mo.IsPlayerPlaced == true)
-					{
-						this._obstaclesToDelete.Add(mo);
-					}
-				}
-			}
-
-			foreach (MovableObstacle obstacle in this._obstaclesToDelete)
-			{
-				obstacle.Destroy();
-			}
-		}
-
-		public void ReceiveEvent(in NextLaunchCooldownEndEvent args)
-		{
-			this.EnableMoveObstacles(true);
 		}
 	}
 }

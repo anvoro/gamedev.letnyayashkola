@@ -6,15 +6,14 @@ namespace UI.ObstacleSelectionUI
 {
 	public class ObstacleSelectPanel : MonoBehaviour
 	{
+		[SerializeField] private Transform _imagesParent;
+
 		private readonly List<ObstacleSelectionImage> _images = new();
 		private readonly Stack<ObstacleSelectionImage> _inactiveImages = new();
 
-		[SerializeField]
-		private Transform _imagesParent;
-		
 		private void Awake()
 		{
-			var images = this._imagesParent.GetComponentsInChildren<ObstacleSelectionImage>();
+			ObstacleSelectionImage[] images = this._imagesParent.GetComponentsInChildren<ObstacleSelectionImage>();
 			this._images.AddRange(images);
 		}
 
@@ -22,7 +21,7 @@ namespace UI.ObstacleSelectionUI
 		{
 			int itemsToShowCount = items.Count;
 			int imagesCount = this._images.Count;
-			
+
 			if (itemsToShowCount > imagesCount)
 			{
 				int delta = itemsToShowCount - imagesCount;
@@ -40,7 +39,7 @@ namespace UI.ObstacleSelectionUI
 					}
 				}
 			}
-			else if(itemsToShowCount < imagesCount)
+			else if (itemsToShowCount < imagesCount)
 			{
 				int delta = imagesCount - itemsToShowCount;
 				for (int i = 0; i < delta; i++)

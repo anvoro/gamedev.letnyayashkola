@@ -13,26 +13,20 @@ namespace UI.Buttons
 		IEventReceiver<NextLaunchCooldownStartEvent>,
 		IEventReceiver<NextLaunchCooldownEndEvent>
 	{
-		private enum BroadcastType
-		{
-			Launch = 0,
-			Reset = 1,
-		}
-		
-		private Button _button;
+		[SerializeField] private TMP_Text _text;
 
-		[SerializeField]
-		private TMP_Text _text;
-		[SerializeField]
-		private Image _fillImage;
-		
-		[SerializeField]
-		private string _launchText = "Launch";
-		[SerializeField]
-		private string _resetText = "Reset";
+		[SerializeField] private Image _fillImage;
+
+		[SerializeField] private string _launchText = "Launch";
+
+		[SerializeField] private string _resetText = "Reset";
+
+		[SerializeField] private bool _pauseOnLaunch;
+
+		private Button _button;
+		private Coroutine _cooldownCoroutine;
 
 		private BroadcastType _currentBroadcastType;
-		private Coroutine _cooldownCoroutine;
 
 		private BroadcastType CurrentBroadcastType
 		{
@@ -53,36 +47,49 @@ namespace UI.Buttons
 		{
 			EventBus<NextLaunchCooldownStartEvent>.Subscribe(this);
 			EventBus<NextLaunchCooldownEndEvent>.Subscribe(this);
-			
+
 			this.CurrentBroadcastType = BroadcastType.Launch;
-			
+
 			this._button = this.GetComponent<Button>();
 			this._button.onClick.AddListener(this.Broadcast);
 
 			this._fillImage.gameObject.SetActive(false);
 		}
 
-		[SerializeField]
-		private bool _pauseOnLaunch;
+		public void ReceiveEvent(in NextLaunchCooldownEndEvent args)
+		{
+			if (this._cooldownCoroutine != null)
+			{
+				this.StopCoroutine(this._cooldownCoroutine);
+			}
+
+			this.OnCooldownEnd();
+		}
+
+		public void ReceiveEvent(in NextLaunchCooldownStartEvent args)
+		{
+			this._cooldownCoroutine = this.StartCoroutine(this.AnimateLaunchCooldown(args.Cooldown));
+		}
+
 		private void Broadcast()
 		{
-			if (this._pauseOnLaunch == true)
+			if (this._pauseOnLaunch)
 			{
 				Debug.Break();
 			}
-			
+
 			switch (this.CurrentBroadcastType)
 			{
 				case BroadcastType.Launch:
 					this.CurrentBroadcastType = BroadcastType.Reset;
 					EventBus<LaunchRequestedUIEvent>.Broadcast(new LaunchRequestedUIEvent());
 					break;
-				
+
 				case BroadcastType.Reset:
 					this.CurrentBroadcastType = BroadcastType.Launch;
 					EventBus<ResetBallRequestedUIEvent>.Broadcast(new ResetBallRequestedUIEvent());
 					break;
-				
+
 				default:
 					throw new ArgumentOutOfRangeException();
 			}
@@ -91,7 +98,7 @@ namespace UI.Buttons
 		private IEnumerator AnimateLaunchCooldown(float launchCooldown)
 		{
 			this._button.SetInteractable(false);
-			
+
 			this._fillImage.gameObject.SetActive(true);
 
 			float startTime = Time.unscaledTime;
@@ -104,7 +111,7 @@ namespace UI.Buttons
 
 				yield return null;
 			}
-			
+
 			this._cooldownCoroutine = null;
 		}
 
@@ -112,23 +119,14 @@ namespace UI.Buttons
 		{
 			this._fillImage.fillAmount = 0f;
 			this._fillImage.gameObject.SetActive(false);
-			
+
 			this._button.SetInteractable(true);
 		}
 
-		public void ReceiveEvent(in NextLaunchCooldownStartEvent args)
+		private enum BroadcastType
 		{
-			this._cooldownCoroutine = this.StartCoroutine(this.AnimateLaunchCooldown(args.Cooldown));
-		}
-
-		public void ReceiveEvent(in NextLaunchCooldownEndEvent args)
-		{
-			if (this._cooldownCoroutine != null)
-			{
-				this.StopCoroutine(this._cooldownCoroutine);
-			}
-			
-			this.OnCooldownEnd();
+			Launch = 0,
+			Reset = 1
 		}
 	}
 }

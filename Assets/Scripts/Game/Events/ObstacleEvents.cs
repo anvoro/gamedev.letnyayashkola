@@ -11,7 +11,7 @@ namespace Game.Events
 			this.Sender = sender;
 		}
 	}
-	
+
 	public readonly struct ObstacleDestroyEvent
 	{
 		public readonly MovableObstacle Sender;
@@ -21,7 +21,7 @@ namespace Game.Events
 			this.Sender = sender;
 		}
 	}
-	
+
 	public readonly struct ObstacleSelectedEvent
 	{
 		public readonly MovableObstacle Sender;
@@ -33,7 +33,7 @@ namespace Game.Events
 			this.NeedRotate = needRotate;
 		}
 	}
-	
+
 	public readonly struct BeginDragObstacleEvent
 	{
 		public readonly MovableObstacle Sender;
@@ -43,7 +43,7 @@ namespace Game.Events
 			this.Sender = sender;
 		}
 	}
-	
+
 	public readonly struct EndDragObstacleEvent
 	{
 		public readonly MovableObstacle Sender;
@@ -53,7 +53,7 @@ namespace Game.Events
 			this.Sender = sender;
 		}
 	}
-	
+
 	public readonly struct ObstacleOverlapEvent
 	{
 		public readonly Obstacle Sender;

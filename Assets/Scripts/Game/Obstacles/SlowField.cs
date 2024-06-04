@@ -1,12 +1,12 @@
-﻿using Core.EventBus;
-using Core.Manager;
-using Game.Events;
+﻿using Core.Manager;
 using UnityEngine;
 
 namespace Game.Obstacles
 {
-	public class TeleportEnter : MovableObstacle
+	public class SlowField : MovableObstacle
 	{
+		[SerializeField] private float _slowFactor = .4f;
+
 		protected override void OnTriggerEnter(Collider other)
 		{
 			base.OnTriggerEnter(other);
@@ -23,8 +23,7 @@ namespace Game.Obstacles
 
 			//todo: заменить на метод (скрипт), который возвращает Ball без использования GetComponentInParent
 			Ball ball = other.gameObject.GetComponentInParent<Ball>();
-
-			EventBus<BallTeleportEvent>.Broadcast(new BallTeleportEvent(ball));
+			ball.Velocity *= this._slowFactor;
 		}
 	}
 }

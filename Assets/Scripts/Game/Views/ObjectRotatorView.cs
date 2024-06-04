@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Game.Views
 {
@@ -7,15 +6,13 @@ namespace Game.Views
 	[RequireComponent(typeof(ObjectRotator))]
 	public class ObjectRotatorView : MonoBehaviour
 	{
-		private ObjectRotator _parent;
-		private Renderer _renderer;
-		
-		[SerializeField]
-		private Material _idleMaterial;
-		[SerializeField]
-		private Material _selectedMaterial;
+		[SerializeField] private Material _idleMaterial;
+
+		[SerializeField] private Material _selectedMaterial;
 
 		private bool _isActive;
+		private ObjectRotator _parent;
+		private Renderer _renderer;
 
 		private bool IsActive
 		{
@@ -23,7 +20,7 @@ namespace Game.Views
 			set
 			{
 				this._isActive = value;
-				this._renderer.material = this._isActive == true ? this._selectedMaterial : this._idleMaterial;
+				this._renderer.material = this._isActive ? this._selectedMaterial : this._idleMaterial;
 			}
 		}
 
@@ -35,7 +32,7 @@ namespace Game.Views
 
 		private void Update()
 		{
-			if (this._parent.IsRotating == true && this.IsActive == false)
+			if (this._parent.IsRotating && this.IsActive == false)
 			{
 				this.IsActive = true;
 			}
@@ -45,7 +42,7 @@ namespace Game.Views
 		{
 			this.IsActive = true;
 		}
-		
+
 		private void OnMouseExit()
 		{
 			this.IsActive = false;

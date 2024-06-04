@@ -1,9 +1,7 @@
 ﻿using Core.Config;
 using Core.EventBus;
-using Game;
 using Game.Events;
 using Game.Obstacles;
-using UI;
 using UI.ObstacleSelectionUI;
 using UnityEngine;
 
@@ -13,18 +11,17 @@ namespace Core.Manager
 		IEventReceiver<DraggedFromSelectionImageUIEvent>,
 		IEventReceiver<EndDragObstacleEvent>
 	{
-		[SerializeField]
-		private ObstacleDatabase _obstacleDatabase;
-		[SerializeField]
-		private ObstacleSelectPanel _obstacleSelectPanel;
+		[SerializeField] private ObstacleDatabase _obstacleDatabase;
+
+		[SerializeField] private ObstacleSelectPanel _obstacleSelectPanel;
 
 		private MovableObstacle _currentSpawnedObstacle;
-        
+
 		protected override void Awake()
 		{
 			EventBus<DraggedFromSelectionImageUIEvent>.Subscribe(this);
 			EventBus<EndDragObstacleEvent>.Subscribe(this);
-			
+
 			base.Awake();
 		}
 
@@ -39,30 +36,30 @@ namespace Core.Manager
 			{
 				return;
 			}
-			
-			if (ObstacleMoveManager.I.TryGetMousePosition(out Vector3 pos) == true)
+
+			if (ObstacleMoveManager.I.TryGetMousePosition(out Vector3 pos))
 			{
 				MovableObstacle movableObstacle = Instantiate(args.Prefab, pos, args.Prefab.transform.rotation);
 				EventBus<ObstacleSpawnEvent>.Broadcast(new ObstacleSpawnEvent(movableObstacle));
-				
+
 				this._currentSpawnedObstacle = movableObstacle;
-				
+
 				this._currentSpawnedObstacle.SetTriggerMode(true);
 				this._currentSpawnedObstacle.Select();
 				this._currentSpawnedObstacle.BeginDrag();
 			}
 		}
-		
+
 		public void ReceiveEvent(in EndDragObstacleEvent args)
 		{
 			if (args.Sender != this._currentSpawnedObstacle)
 			{
 				return;
 			}
-			
+
 			this._currentSpawnedObstacle.ClearSelection();
-			
-			if (this._currentSpawnedObstacle.IsOverlap == true)
+
+			if (this._currentSpawnedObstacle.IsOverlap)
 			{
 				this._currentSpawnedObstacle.Destroy();
 			}

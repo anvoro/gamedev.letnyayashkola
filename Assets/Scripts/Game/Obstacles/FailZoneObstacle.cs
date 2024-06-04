@@ -13,9 +13,9 @@ namespace Game.Obstacles
 				return;
 			}
 
-			var ball = other.gameObject.GetComponent<Ball>();
+			Ball ball = other.gameObject.GetComponent<Ball>();
 			ball.ResetRigidbody();
-			
+
 			EventBus<FailEvent>.Broadcast(new FailEvent());
 		}
 	}

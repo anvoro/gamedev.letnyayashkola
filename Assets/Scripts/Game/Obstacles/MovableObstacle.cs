@@ -10,29 +10,51 @@ namespace Game.Obstacles
 		IEventReceiver<BeginDragMouseEvent>,
 		IEventReceiver<ResetLevelRequestedUIEvent>
 	{
-		[SerializeField]
-		private bool _needRotate = true;
-		
-		private Vector3 _startPosition;
-		private Quaternion _startRotation;
-		
-		private Vector3 _mouseDragOffset;
-		private bool _isDrag;
+		[SerializeField] private bool _needRotate = true;
+
+		public string Id;
 
 		private bool _inMouseFocus;
-		
+		private bool _isDrag;
+
+		private Vector3 _mouseDragOffset;
+
+		private Vector3 _startPosition;
+		private Quaternion _startRotation;
+
 		public bool IsPlayerPlaced { get; set; }
-		
+
 		protected override void Awake()
 		{
 			this._startPosition = this.transform.position;
 			this._startRotation = this.transform.rotation;
-			
+
 			EventBus<EndDragMouseEvent>.Subscribe(this);
 			EventBus<BeginDragMouseEvent>.Subscribe(this);
 			EventBus<ResetLevelRequestedUIEvent>.Subscribe(this);
-			
+
 			base.Awake();
+		}
+
+		private void Update()
+		{
+			if (ObstacleMoveManager.I.MoveAllowed == false)
+			{
+				return;
+			}
+
+			tryApplyDrag();
+
+			void tryApplyDrag()
+			{
+				if (this._isDrag)
+				{
+					if (ObstacleMoveManager.I.TryGetMousePosition(out Vector3 pos))
+					{
+						this.transform.position = pos + this._mouseDragOffset;
+					}
+				}
+			}
 		}
 
 		private void OnDestroy()
@@ -42,48 +64,6 @@ namespace Game.Obstacles
 			EventBus<ResetLevelRequestedUIEvent>.Unsubscribe(this);
 		}
 
-		private void Update()
-		{
-			if (ObstacleMoveManager.I.MoveAllowed == false)
-			{
-				return;
-			}
-			
-			tryApplyDrag();
-			
-			void tryApplyDrag()
-			{
-				if (this._isDrag == true)
-				{
-					if (ObstacleMoveManager.I.TryGetMousePosition(out Vector3 pos) == true)
-					{
-						this.transform.position = pos + this._mouseDragOffset;
-					}
-				}
-			}
-		}
-
-		public void Select()
-		{
-			if (ObstacleMoveManager.I.MoveAllowed == false)
-			{
-				return;
-			}
-			
-			EventBus<ObstacleSelectedEvent>.Broadcast(new ObstacleSelectedEvent(this, this._needRotate));
-		}
-		
-		public void ClearSelection()
-		{
-			EventBus<ObstacleSelectedEvent>.Broadcast(new ObstacleSelectedEvent(null, false));
-		}
-
-		public void Destroy()
-		{
-			EventBus<ObstacleDestroyEvent>.Broadcast(new ObstacleDestroyEvent(this));
-			GameObject.Destroy(this.gameObject);
-		}
-		
 		private void OnMouseDown()
 		{
 			this.Select();
@@ -95,7 +75,7 @@ namespace Game.Obstacles
 			{
 				return;
 			}
-			
+
 			this._inMouseFocus = true;
 		}
 
@@ -105,38 +85,22 @@ namespace Game.Obstacles
 			{
 				return;
 			}
-            
+
 			this._inMouseFocus = false;
 		}
 
-		public void BeginDrag()
-		{
-			if (ObstacleMoveManager.I.MoveAllowed == false)
-			{
-				return;
-			}
-			
-			if (ObstacleMoveManager.I.TryGetMousePosition(out Vector3 offset) == true)
-			{
-				this._mouseDragOffset = this.transform.position - offset;
-				this._isDrag = true;
-				
-				EventBus<BeginDragObstacleEvent>.Broadcast(new BeginDragObstacleEvent(this));
-			}
-		}
-		
 		public void ReceiveEvent(in BeginDragMouseEvent args)
 		{
 			if (ObstacleMoveManager.I.MoveAllowed == false)
 			{
 				return;
 			}
-			
+
 			if (this._inMouseFocus == false)
 			{
 				return;
 			}
-			
+
 			this.BeginDrag();
 		}
 
@@ -146,25 +110,62 @@ namespace Game.Obstacles
 			{
 				return;
 			}
-            
+
 			if (this._isDrag == false)
 			{
 				return;
 			}
-			
+
 			this._isDrag = false;
 			EventBus<EndDragObstacleEvent>.Broadcast(new EndDragObstacleEvent(this));
-		}
-		
-		private void ResetTransform()
-		{
-			this.transform.position = this._startPosition;
-			this.transform.rotation = this._startRotation;
 		}
 
 		public void ReceiveEvent(in ResetLevelRequestedUIEvent args)
 		{
 			this.ResetTransform();
+		}
+
+		public void Select()
+		{
+			if (ObstacleMoveManager.I.MoveAllowed == false)
+			{
+				return;
+			}
+
+			EventBus<ObstacleSelectedEvent>.Broadcast(new ObstacleSelectedEvent(this, this._needRotate));
+		}
+
+		public void ClearSelection()
+		{
+			EventBus<ObstacleSelectedEvent>.Broadcast(new ObstacleSelectedEvent(null, false));
+		}
+
+		public void Destroy()
+		{
+			EventBus<ObstacleDestroyEvent>.Broadcast(new ObstacleDestroyEvent(this));
+			Destroy(this.gameObject);
+		}
+
+		public void BeginDrag()
+		{
+			if (ObstacleMoveManager.I.MoveAllowed == false)
+			{
+				return;
+			}
+
+			if (ObstacleMoveManager.I.TryGetMousePosition(out Vector3 offset))
+			{
+				this._mouseDragOffset = this.transform.position - offset;
+				this._isDrag = true;
+
+				EventBus<BeginDragObstacleEvent>.Broadcast(new BeginDragObstacleEvent(this));
+			}
+		}
+
+		private void ResetTransform()
+		{
+			this.transform.position = this._startPosition;
+			this.transform.rotation = this._startRotation;
 		}
 	}
 }

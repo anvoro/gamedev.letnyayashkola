@@ -1,5 +1,4 @@
-﻿using System;
-using Core.EventBus;
+﻿using Core.EventBus;
 using Game.Events;
 using Game.Obstacles;
 using UnityEngine;
@@ -12,24 +11,22 @@ namespace Game.Views
 		IEventReceiver<ObstacleSelectedEvent>,
 		IEventReceiver<ObstacleOverlapEvent>
 	{
-		private MovableObstacle _parent;
-		private Renderer _renderer;
-		
-		[SerializeField]
-		private Material _idleMaterial;
-		[SerializeField]
-		private Material _selectedMaterial;
-		[SerializeField]
-		private Material _collidedMaterial;
+		[SerializeField] private Material _idleMaterial;
+
+		[SerializeField] private Material _selectedMaterial;
+
+		[SerializeField] private Material _collidedMaterial;
 
 		private bool _isShowCollided;
 		private Material _materialBeforeCollision;
-		
+		private MovableObstacle _parent;
+		private Renderer _renderer;
+
 		private void Awake()
 		{
 			EventBus<ObstacleSelectedEvent>.Subscribe(this);
 			EventBus<ObstacleOverlapEvent>.Subscribe(this);
-			
+
 			this._parent = this.GetComponent<MovableObstacle>();
 			this._renderer = this.GetComponent<Renderer>();
 		}
@@ -40,11 +37,6 @@ namespace Game.Views
 			EventBus<ObstacleOverlapEvent>.Unsubscribe(this);
 		}
 
-		public void ReceiveEvent(in ObstacleSelectedEvent args)
-		{
-			this._renderer.material = args.Sender == this._parent ? this._selectedMaterial : this._idleMaterial;
-		}
-
 		public void ReceiveEvent(in ObstacleOverlapEvent args)
 		{
 			if (args.Sender != this._parent)
@@ -52,7 +44,7 @@ namespace Game.Views
 				return;
 			}
 
-			if (args.IsOverlap == true)
+			if (args.IsOverlap)
 			{
 				this._materialBeforeCollision = this._renderer.material;
 				this._renderer.material = this._collidedMaterial;
@@ -61,6 +53,11 @@ namespace Game.Views
 			{
 				this._renderer.material = this._materialBeforeCollision;
 			}
+		}
+
+		public void ReceiveEvent(in ObstacleSelectedEvent args)
+		{
+			this._renderer.material = args.Sender == this._parent ? this._selectedMaterial : this._idleMaterial;
 		}
 	}
 }
