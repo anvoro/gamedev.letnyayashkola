@@ -11,12 +11,11 @@ GameObject:
   - component: {fileID: 4202343139233770643}
   - component: {fileID: 4202343139233770640}
   - component: {fileID: 4202343139233770641}
-  - component: {fileID: 4070646294102203775}
+  - component: {fileID: 6292030355315587128}
   - component: {fileID: 4202343139233770642}
-  - component: {fileID: 2656516219574270680}
-  - component: {fileID: 7121567099231072810}
+  - component: {fileID: 190101903439076479}
   m_Layer: 6
-  m_Name: BounceObstacleMovable
+  m_Name: BounceObstacleRotation
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -65,7 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 857762719d8e08841a69131e8c6875f0, type: 2}
+  - {fileID: 2100000, guid: 011b0f31a2a5b034b8aa0dfda8f365b6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -87,7 +86,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!54 &4070646294102203775
+--- !u!54 &6292030355315587128
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -116,7 +115,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &2656516219574270680
+--- !u!114 &190101903439076479
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -125,21 +124,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4202343139233770652}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74a5e436873a4761a3ad1cef93d6783d, type: 3}
+  m_Script: {fileID: 11500000, guid: e0363ef1aba24de89b9493f9fcbf2f18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &7121567099231072810
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4202343139233770652}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a569bfff2a2d49f18ba831ec2e2ece85, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _idleMaterial: {fileID: 2100000, guid: 857762719d8e08841a69131e8c6875f0, type: 2}
-  _selectedMaterial: {fileID: 2100000, guid: 902e9bb07e1ce084f9e9d8130f04fdba, type: 2}
-  _collidedMaterial: {fileID: 2100000, guid: 9a4c82c8631e30d4fabbfae10adb2ef9, type: 2}
+  _rotationSpeed: 0.3
