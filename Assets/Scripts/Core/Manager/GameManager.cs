@@ -18,6 +18,8 @@ namespace Core.Manager
 
 		protected override void Awake()
 		{
+			Screen.SetResolution(1920, 1080, FullScreenMode.Windowed);
+			
 			EventBus<LaunchRequestedUIEvent>.Subscribe(this);
 			EventBus<ResetBallRequestedUIEvent>.Subscribe(this);
 			EventBus<TargetReachedEvent>.Subscribe(this);
