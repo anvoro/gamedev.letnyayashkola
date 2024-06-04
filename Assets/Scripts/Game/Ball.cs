@@ -1,3 +1,4 @@
+using System;
 using Core.EventBus;
 using Game.Events;
 using UnityEngine;
@@ -16,7 +17,13 @@ namespace Game
 
 		private Vector3 _startPosition;
 		private Quaternion _startRotation;
-		
+
+		public Vector3 Velocity
+		{
+			get => this._rigidbody.velocity;
+			set => this._rigidbody.velocity = value;
+		}
+
 		private void Awake()
 		{
 			this._startPosition = this.transform.position;

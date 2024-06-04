@@ -62,8 +62,15 @@ namespace UI.Buttons
 			this._fillImage.gameObject.SetActive(false);
 		}
 
+		[SerializeField]
+		private bool _pauseOnLaunch;
 		private void Broadcast()
 		{
+			if (this._pauseOnLaunch == true)
+			{
+				Debug.Break();
+			}
+			
 			switch (this.CurrentBroadcastType)
 			{
 				case BroadcastType.Launch:

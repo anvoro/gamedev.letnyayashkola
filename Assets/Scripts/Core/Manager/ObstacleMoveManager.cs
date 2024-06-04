@@ -154,7 +154,7 @@ namespace Core.Manager
 			}
 
 			this._rotator.ObjectToRotate = this._currentSelectedObstacle.transform;
-			this.ActivateRotator(true);
+			this.ActivateRotator(args.NeedRotate);
 		}
 		
 		public void ReceiveEvent(in BeginDragObstacleEvent args)

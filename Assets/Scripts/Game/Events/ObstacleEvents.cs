@@ -25,10 +25,12 @@ namespace Game.Events
 	public readonly struct ObstacleSelectedEvent
 	{
 		public readonly MovableObstacle Sender;
+		public readonly bool NeedRotate;
 
-		public ObstacleSelectedEvent(MovableObstacle sender)
+		public ObstacleSelectedEvent(MovableObstacle sender, bool needRotate)
 		{
 			this.Sender = sender;
+			this.NeedRotate = needRotate;
 		}
 	}
 	

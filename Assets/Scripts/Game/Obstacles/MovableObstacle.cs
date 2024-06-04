@@ -10,6 +10,9 @@ namespace Game.Obstacles
 		IEventReceiver<BeginDragMouseEvent>,
 		IEventReceiver<ResetLevelRequestedUIEvent>
 	{
+		[SerializeField]
+		private bool _needRotate = true;
+		
 		private Vector3 _startPosition;
 		private Quaternion _startRotation;
 		
@@ -67,12 +70,12 @@ namespace Game.Obstacles
 				return;
 			}
 			
-			EventBus<ObstacleSelectedEvent>.Broadcast(new ObstacleSelectedEvent(this));
+			EventBus<ObstacleSelectedEvent>.Broadcast(new ObstacleSelectedEvent(this, this._needRotate));
 		}
 		
 		public void ClearSelection()
 		{
-			EventBus<ObstacleSelectedEvent>.Broadcast(new ObstacleSelectedEvent(null));
+			EventBus<ObstacleSelectedEvent>.Broadcast(new ObstacleSelectedEvent(null, false));
 		}
 
 		public void Destroy()

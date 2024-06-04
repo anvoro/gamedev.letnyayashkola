@@ -21,4 +21,14 @@
 	public readonly struct FailEvent { }
 	
 	public readonly struct TargetReachedEvent { }
+
+	public readonly struct BallTeleportEvent
+	{
+		public readonly Ball Ball;
+
+		public BallTeleportEvent(Ball ball)
+		{
+			this.Ball = ball;
+		}
+	}
 }
