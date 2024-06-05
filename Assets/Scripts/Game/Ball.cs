@@ -7,7 +7,8 @@ namespace Game
 	[RequireComponent(typeof(Rigidbody))]
 	public class Ball : MonoBehaviour,
 		IEventReceiver<LaunchBallEvent>,
-		IEventReceiver<ResetBallEvent>
+		IEventReceiver<ResetBallEvent>,
+		IEventReceiver<NextLaunchCooldownEndEvent>
 	{
 		[SerializeField] private float _force = 1000f;
 
@@ -28,20 +29,12 @@ namespace Game
 			this._startRotation = this.transform.rotation;
 
 			this._rigidbody = this.GetComponent<Rigidbody>();
+			
 			EventBus<LaunchBallEvent>.Subscribe(this);
 			EventBus<ResetBallEvent>.Subscribe(this);
+			EventBus<NextLaunchCooldownEndEvent>.Subscribe(this);
 		}
 		
-		public void ReceiveEvent(in LaunchBallEvent args)
-		{
-			this.AddForce(this.gameObject.transform.forward, this._force);
-		}
-
-		public void ReceiveEvent(in ResetBallEvent args)
-		{
-			this.ResetTransform();
-		}
-
 		public void ResetRigidbody()
 		{
 			this._rigidbody.velocity = new Vector3(0f, 0f, 0f);
@@ -61,6 +54,21 @@ namespace Game
 			this._rigidbody.AddForce(direction * force);
 		}
 		
+		public void ReceiveEvent(in LaunchBallEvent args)
+		{
+			this.AddForce(this.gameObject.transform.forward, this._force);
+		}
+
+		public void ReceiveEvent(in ResetBallEvent args)
+		{
+			this.ResetTransform();
+		}
+		
+		public void ReceiveEvent(in NextLaunchCooldownEndEvent args)
+		{
+			this.ResetRigidbody();
+		}
+		
 #if UNITY_EDITOR
 		private void OnDrawGizmos()
 		{
@@ -78,5 +86,6 @@ namespace Game
 				this.gameObject.transform.position + this._rigidbody.velocity.normalized * 2f);
 		}
 #endif
+
 	}
 }
